@@ -62,8 +62,12 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
             IllegalStateException, IOException {
         this.mediaPlayer = new MediaPlayer();
         String pathYsb = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
-        String path3 = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
-        this.mediaPlayer.setDataSource(path3);
+        String ifengZ = "http://live.3gv.ifeng.com/zixun.m3u8";
+        String ifeng = "http://live.3gv.ifeng.com/live/zhongwen.m3u8";
+        String ifengHK = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
+
+        String test = "";
+        this.mediaPlayer.setDataSource(ifeng);
         this.mediaPlayer.setDisplay(this.surfaceHolder);
         this.mediaPlayer.prepare();
         this.mediaPlayer.start();
@@ -130,17 +134,23 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
         int screenW = dm.widthPixels;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) this.surfaceView.getLayoutParams();
         if(screenH > screenW){
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.height = screenW * this.videoHeight / this.videoWidth;
-            this.surfaceView.setLayoutParams(params);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            try {
+                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                params.height = screenW * this.videoHeight / this.videoWidth;
+                this.surfaceView.setLayoutParams(params);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            }catch (Exception e){e.printStackTrace();}
+
         }else if(screenH < screenW){
-            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            params.width = screenH * this.videoWidth / this.videoHeight;
-            this.surfaceView.setLayoutParams(params);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            try{
+                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                params.width = screenH * this.videoWidth / this.videoHeight;
+                this.surfaceView.setLayoutParams(params);
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            }catch (Exception e){e.printStackTrace();}
+
         }
         this.surfaceHolder.setFixedSize(this.videoWidth, this.videoHeight);
     }

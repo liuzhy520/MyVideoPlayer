@@ -115,6 +115,7 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
             this.mediaPlayer.start();
         }
         fixVideo();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Toast.makeText(this,"start!", Toast.LENGTH_SHORT).show();
     }
     @Override

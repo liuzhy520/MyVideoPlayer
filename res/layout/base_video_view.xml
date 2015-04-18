@@ -10,8 +10,27 @@
                  android:layout_centerInParent="true"
 
             />
-    <ProgressBar
-            android:id="@+id/progressBar"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            />
+        <LinearLayout
+            android:id="@id/base_video_control_layout"
+        	android:layout_width="match_parent"
+        	android:layout_height="0dp"
+        	android:layout_weight="1"
+        	android:orientation="vertical">
+            
+        </LinearLayout>
+    </LinearLayout>
+        <ProgressBar
+            android:id="@+id/base_video_progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

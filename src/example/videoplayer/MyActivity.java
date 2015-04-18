@@ -27,8 +27,11 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
     private int videoWidth;
     private int videoHeight;
     private ProgressBar progressBar;
-
-    @Override
+    private boolean isPause = false;
+    
+    
+    @SuppressWarnings("deprecation")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -39,6 +42,20 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
         this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
         this.progressBar.setVisibility(View.VISIBLE);
         Log.v("mplayer", ">>>create ok.");
+        this.surfaceView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(!isPause){
+					MyActivity.this.mediaPlayer.pause();
+					isPause = true;
+				}else{
+					MyActivity.this.mediaPlayer.start();
+					isPause = false;
+				}
+			}
+		});
 
     }
     protected void onStop(){
@@ -65,9 +82,9 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
         String ifengZ = "http://live.3gv.ifeng.com/zixun.m3u8";
         String ifeng = "http://live.3gv.ifeng.com/live/zhongwen.m3u8";
         String ifengHK = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
-
-        String test = "";
-        this.mediaPlayer.setDataSource(ifeng);
+        
+        String test = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
+        this.mediaPlayer.setDataSource(test);
         this.mediaPlayer.setDisplay(this.surfaceHolder);
         this.mediaPlayer.prepare();
         this.mediaPlayer.start();

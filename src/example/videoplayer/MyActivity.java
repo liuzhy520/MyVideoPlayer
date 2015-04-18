@@ -1,6 +1,7 @@
 package example.videoplayer;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
@@ -28,8 +29,9 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
     private int videoHeight;
     private ProgressBar progressBar;
     private boolean isPause = false;
-    
-    
+    private boolean isLandscape = false;
+    private boolean isFullScreenClick = false;
+    private LinearLayout controller;
     @SuppressWarnings("deprecation")
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
         this.surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
         this.progressBar.setVisibility(View.VISIBLE);
+        controller = (LinearLayout) findViewById(R.id.base_video_control_layout);
         Log.v("mplayer", ">>>create ok.");
         this.surfaceView.setOnClickListener(new View.OnClickListener() {
 			
@@ -54,8 +57,60 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
 					MyActivity.this.mediaPlayer.start();
 					isPause = false;
 				}
+				
 			}
 		});
+        this.controller.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(isLandscape){
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);					
+					isFullScreenClick = true;
+				}else {
+					setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);					
+					isFullScreenClick = true;
+				}
+
+			}
+		});
+        new OrientationEventListener(this){
+
+			@Override
+			public void onOrientationChanged(int rotation) {
+				// TODO Auto-generated method stub
+				
+					if(isLandscape && !isFullScreenClick){					
+						if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {
+							setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+							isLandscape = false;
+						}
+					}else if(!isFullScreenClick && !isLandscape){
+						if (((rotation >= 230) && (rotation <= 310))) {     
+							setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+							isLandscape = true;
+							
+						}
+						
+					}	
+					
+					if(isFullScreenClick){
+						if(isLandscape){
+							if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {     // Mark A
+								isFullScreenClick = false;
+							}
+						}else {
+							if (((rotation >= 230) && (rotation <= 310))) {     
+								isFullScreenClick = false;							
+							}
+						}
+					}
+							
+				
+			}
+        	
+        }.enable();
 
     }
     protected void onStop(){
@@ -84,7 +139,7 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
         String ifengHK = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
         
         String test = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
-        this.mediaPlayer.setDataSource(test);
+        this.mediaPlayer.setDataSource(pathYsb);
         this.mediaPlayer.setDisplay(this.surfaceHolder);
         this.mediaPlayer.prepare();
         this.mediaPlayer.start();
@@ -137,7 +192,8 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
         }
         fixVideo();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        Toast.makeText(this,"start!", Toast.LENGTH_SHORT).show();
+        String d = String.valueOf(mediaPlayer.getDuration());
+        Toast.makeText(this,"start!" + d, Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -145,6 +201,8 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
         fixVideo();
     }
     private void fixVideo(){
+    	String d = String.valueOf(mediaPlayer.getCurrentPosition());
+        Toast.makeText(this,"position" + d, Toast.LENGTH_SHORT).show();
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int screenH = dm.heightPixels;

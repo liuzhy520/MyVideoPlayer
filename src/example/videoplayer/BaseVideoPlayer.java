@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,6 +54,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
     public void prepare(String path){
     	try {
     		this.mediaPlayer.setDataSource(path);
+    		this.mediaPlayer.prepareAsync();
 			this.mediaPlayer.prepare();
 			
 		} catch (IllegalStateException e) {
@@ -82,4 +84,6 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
     public void stop(){
     	
     }
+    
+
 }

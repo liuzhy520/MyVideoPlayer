@@ -19,6 +19,11 @@ import android.widget.Toast;
 /**
  * Created by Wayne on 2015/4/17.
  * This is a basic video widget that can be used directly or extended
+ * In this class it will only implement:
+ * 1. video IO/Streaming
+ * 2. AD/Content preloading 
+ * 3. P/L switch calculation
+ *  
  */
 public abstract class BaseVideoPlayer extends RelativeLayout{
     protected Context context;

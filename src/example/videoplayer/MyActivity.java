@@ -1,6 +1,7 @@
 package example.videoplayer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -50,13 +51,16 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(!isPause){
-					MyActivity.this.mediaPlayer.pause();
-					isPause = true;
-				}else{
-					MyActivity.this.mediaPlayer.start();
-					isPause = false;
-				}
+                Intent intent = new Intent(MyActivity.this, UseWidgetActivity.class);
+                startActivity(intent);
+
+//				if(!isPause){
+//					MyActivity.this.mediaPlayer.pause();
+//					isPause = true;
+//				}else{
+//					MyActivity.this.mediaPlayer.start();
+//					isPause = false;
+//				}
 				
 			}
 		});
@@ -90,11 +94,11 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
 						if (((rotation >= 230) && (rotation <= 310))) {     
 							setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 							isLandscape = true;
-							
+
 						}
 						
-					}	
-					
+					}
+
 					if(isFullScreenClick){
 						if(isLandscape){
 							if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {     // Mark A
@@ -106,8 +110,8 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
 							}
 						}
 					}
-							
-				
+
+
 			}
         	
         }.enable();

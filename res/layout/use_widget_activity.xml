@@ -5,7 +5,14 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-            <example.videoplayer.VideoPlayer
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                <example.videoplayer.VideoPlayer
+                    android:id="@+id/base_video_player"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:text="activity content"
+            />
 </LinearLayout>

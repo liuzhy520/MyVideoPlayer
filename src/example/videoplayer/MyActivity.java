@@ -32,6 +32,7 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
     private boolean isPause = false;
     private boolean isLandscape = false;
     private boolean isFullScreenClick = false;
+    private int currentPosition = 0;
     private LinearLayout controller;
     @SuppressWarnings("deprecation")
 	@Override
@@ -117,13 +118,46 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
         }.enable();
 
     }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(isPause){
+            try{
+                this.mediaPlayer.seekTo(currentPosition);
+                this.mediaPlayer.start();
+                fixVideo();
+            }catch (Exception e) {e.printStackTrace();}
+            isPause = false;
+        }
+    }
+    @Override
+    protected void onPause(){
+        super.onResume();
+        try {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.pause();
+                isPause = true;
+                currentPosition = this.mediaPlayer.getCurrentPosition();
+            }
+
+        }catch (Exception e) {e.printStackTrace();}
+
+    }
+    @Override
     protected void onStop(){
         super.onStop();
-        this.mediaPlayer.stop();
+        try {
+            this.mediaPlayer.stop();
+        }catch (Exception e){e.printStackTrace();}
+
     }
+    @Override
     protected void onDestroy(){
         super.onDestroy();
-        this.mediaPlayer.release();
+        try {
+            this.mediaPlayer.release();
+        }catch (Exception e) {e.printStackTrace();}
+
     }
 
     private void playVideo() throws IllegalArgumentException,
@@ -148,11 +182,19 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         // TODO Auto-generated method stub
-
-        try {
-            this.playVideo();
-        } catch (Exception e) {
-            Log.e("mplayer", ">>>error", e);
+        if(isPause){
+            try{
+                this.mediaPlayer.seekTo(currentPosition);
+                this.mediaPlayer.start();
+                fixVideo();
+            }catch (Exception e) {e.printStackTrace();}
+            isPause = false;
+        }else {
+            try {
+                this.playVideo();
+            } catch (Exception e) {
+                Log.e("mplayer", ">>>error", e);
+            }
         }
         Log.v("mplayer", ">>>surface created");
     }

@@ -3,6 +3,8 @@ package example.videoplayer;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import example.videoplayer.util.MyVideoPlayer;
 
 import java.util.ArrayList;
@@ -22,10 +24,17 @@ public class UseWidgetActivity extends Activity {
         VideoPlayer = (VideoPlayer) findViewById(R.id.base_video_player);
         ArrayList<String> path = new ArrayList<String>();
         path.add("http://v.ysbang.cn/data/test/test0.mp4");
-        path.add("http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4");
-//        path.add("http://v.ysbang.cn/data/test/test0.mp4");
 //        path.add("http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4");
+//        path.add("http://v.ysbang.cn/data/test/test0.mp4");
+        path.add("http://live.3gv.ifeng.com/live/hongkong.m3u8");
         VideoPlayer.setDisplay(path);
+        TextView text = (TextView) findViewById(R.id.text);
+        text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                VideoPlayer.setFullScreenSwitcher();
+            }
+        });
 
 
     }
@@ -40,14 +49,23 @@ public class UseWidgetActivity extends Activity {
 
     public void onPause(){
         super.onPause();
+        try {
+            VideoPlayer.pause();
+        }catch (Exception e) {e.printStackTrace();}
     }
 
     public void onStop(){
         super.onStop();
+        try {
+            VideoPlayer.stop();
+        }catch (Exception e) {e.printStackTrace();}
     }
 
     public void onDestroy(){
         super.onDestroy();
+        try {
+            VideoPlayer.release();
+        }catch (Exception e) {e.printStackTrace();}
     }
 
 }

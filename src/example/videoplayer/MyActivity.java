@@ -164,14 +164,15 @@ public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdat
             IllegalStateException, IOException {
         this.mediaPlayer = new MediaPlayer();
         String pathYsb = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
+        String YsbAd = "http://v.ysbang.cn/data/test/test0.mp4";
         String ifengZ = "http://live.3gv.ifeng.com/zixun.m3u8";
         String ifeng = "http://live.3gv.ifeng.com/live/zhongwen.m3u8";
         String ifengHK = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
         
         String test = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
-        this.mediaPlayer.setDataSource(pathYsb);
+        this.mediaPlayer.setDataSource(ifengHK);
         this.mediaPlayer.setDisplay(this.surfaceHolder);
-        this.mediaPlayer.prepare();
+        this.mediaPlayer.prepareAsync();
         this.mediaPlayer.start();
         this.mediaPlayer.setOnBufferingUpdateListener(this);
         this.mediaPlayer.setOnPreparedListener(this);

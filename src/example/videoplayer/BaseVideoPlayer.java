@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,12 +38,13 @@ public class BaseVideoPlayer extends RelativeLayout{
     protected SurfaceView surfaceView;
     protected SurfaceHolder surfaceHolder;
     protected ProgressBar progressBar;
+    protected ImageView maskImage;
     // values
-    private int videoWidth;
-    private int videoHeight;
-    private boolean isPause = false;
-    private boolean isLandscape = false;
-    private boolean isFullScreenClick = false;
+    protected int videoWidth;
+    protected int videoHeight;
+    protected boolean isPause = false;
+    protected boolean isLandscape = false;
+    protected boolean isFullScreenClick = false;
     // VideoPlayer
     private MyVideoPlayer myVideoPlayer;
     /** listeners **/
@@ -68,7 +70,13 @@ public class BaseVideoPlayer extends RelativeLayout{
         surfaceView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
+				if(!isPause){
+					pause();
+					isPause = true;
+				}else{
+					start();
+					isPause = false;
+				}
             }
         });
         Log.v("BaseVideo", ">>>created! time:" + System.currentTimeMillis());
@@ -81,14 +89,18 @@ public class BaseVideoPlayer extends RelativeLayout{
                 BaseVideoPlayer.this.surfaceHolder.addCallback(new SurfaceHolder.Callback() {
                     @Override
                     public void surfaceCreated( SurfaceHolder surfaceHolder) {
-                        myVideoPlayer.playVideos(surfaceHolder);
                         myVideoPlayer.loadFirstVideo(surfaceHolder, new MyVideoPlayer.onPreparedListener() {
                             @Override
                             public void onPrepared(MediaPlayer mediaPlayer) {
                                 mediaPlayer.start();
                                 fixPLViews();
-                                progressBar.setVisibility(GONE);
+                                try {
+                                    progressBar.setVisibility(GONE);
+                                    maskImage.setVisibility(GONE);
+                                } catch (Exception e) {e.printStackTrace();}
+
                                 Log.v("BaseVideo", ">>>start! time:" + System.currentTimeMillis());
+                                Log.v("BaseVideo", ">>>video duration:" +  myVideoPlayer.getCurrentVideoDuration());
                             }
                         });
                         myVideoPlayer.loadMorePlayerThread(surfaceHolder);
@@ -97,14 +109,15 @@ public class BaseVideoPlayer extends RelativeLayout{
                     @Override
                     public void surfaceChanged(final SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
-
-
                     }
 
                     @Override
                     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
                         if (null != myVideoPlayer.getCurrentPlayer()) {
                             myVideoPlayer.releaseAll();
+                            synchronized(this) {
+                                this.notifyAll();
+                            }
                         }
                     }
                 });
@@ -146,7 +159,7 @@ public class BaseVideoPlayer extends RelativeLayout{
     }
 
     /** this is a method for full screen button **/
-    public void setFullScreenSwticher(){
+    public void setFullScreenSwitcher(){
         if(isLandscape){
             ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             isFullScreenClick = true;
@@ -156,11 +169,79 @@ public class BaseVideoPlayer extends RelativeLayout{
         }
     }
 
+    /** media player function widgets **/
+    public void start() {
+        try {
+            myVideoPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pause() {
+        try {
+            myVideoPlayer.pause();
+            Log.v("BaseVideo", ">>>pause! time:" + System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stop() {
+        try {
+            myVideoPlayer.stop();
+            Log.v("BaseVideo", ">>>stop! time:" + System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void release() {
+        try {
+          myVideoPlayer.releaseAll();
+            Log.v("BaseVideo", ">>>release! time:" + System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void seekTo(int position) {
+        try {
+            myVideoPlayer.seekTo(position);
+            Log.v("BaseVideo", ">>>seek to:" + position + " time:" + System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getCurrentVideoPosition() {
+        int position = 0;
+        try {
+            position = myVideoPlayer.getCurrentVideoPosition();
+            Log.v("BaseVideo", ">>>current position: " + position + " time:" + System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return position;
+    }
+
+    public int getCurrentVideoDuration() {
+        int duration = 0;
+        try {
+            duration = myVideoPlayer.getCurrentVideoDuration();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return duration;
+    }
+
+    /** fix screen size **/
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         fixPLViews();
     }
+
     public void fixPLViews(){
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);

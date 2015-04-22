@@ -50,3 +50,8 @@ Temporary Items
 .idea/misc.xml
 .idea/modules.xml
 .idea/scopes/scope_settings.xml
+bin/classes.dex
+*.class
+bin/classes.dex
+bin/classes.dex
+*.class

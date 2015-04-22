@@ -137,6 +137,7 @@ public class MyVideoPlayer {
 									Log.e("prepared", String.valueOf(currentVideoIndex));
 									if(isCompleted){
 										try {
+											mediaPlayer.setDisplay(surfaceHolder);
 											mediaPlayer.start();
 											isCompleted = false;
 										} catch (Exception e) { e.printStackTrace();}

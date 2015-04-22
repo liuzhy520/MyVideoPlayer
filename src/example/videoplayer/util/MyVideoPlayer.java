@@ -24,6 +24,7 @@ public class MyVideoPlayer {
 
 	/** values **/
 	private boolean isLoaded = false;
+	private Loaded syncFlag = new Loaded();
 	/** store videoPlayer list **/
 	ArrayList<MediaPlayer> cachePlayerList;
 
@@ -36,13 +37,13 @@ public class MyVideoPlayer {
 	/** interfaces **/
 	private onVideoFinishListener finishListener;
 	private onPreparedListener preparedListener;
-
 	private onLoadNextSuccessListener loadNextSuccessListener;
 
 	public MyVideoPlayer(ArrayList<String> paths) {
 		/** Initialize values and objects **/
 		cachePlayerList = new ArrayList<MediaPlayer>();
 		currentPlayer = new MediaPlayer();
+		currentPlayer.setScreenOnWhilePlaying(true);
 		urlList = new ArrayList<String>();
 		currentVideoIndex = 0;
 		setVideos(paths);
@@ -135,6 +136,10 @@ public class MyVideoPlayer {
 									cachePlayer = mediaPlayer;
 									Log.e("prepared", String.valueOf(currentVideoIndex));
 									isLoaded = true;
+									synchronized (syncFlag){
+										syncFlag.isLoaded = true;
+										syncFlag.notifyAll();
+									}
 								}
 							});
 
@@ -160,12 +165,14 @@ public class MyVideoPlayer {
 //			mediaPlayer.release();
 			Log.e("listener complete top", String.valueOf(currentVideoIndex));
 			if (currentVideoIndex < urlList.size() - 1) {
-//				synchronized (this){
-//					while(!isLoaded){
-//						wait();
-//					}
-//				}
 				currentPlayer = cachePlayerList.get(currentVideoIndex);
+				synchronized (syncFlag) {
+					while (!syncFlag.isLoaded){
+//						try {
+						syncFlag.wait(1000);
+//						} catch (Exception e) {e.printStackTrace();}
+					}
+				}
 				currentPlayer.setDisplay(surfaceHolder);
 
 				Log.e("listener complete", String.valueOf(currentVideoIndex));
@@ -180,7 +187,8 @@ public class MyVideoPlayer {
 			e.printStackTrace();
 		}
 		currentVideoIndex++;
-//		isLoaded = false;
+		isLoaded = false;
+		syncFlag.isLoaded = false;
 	}
 
 	public MediaPlayer getCurrentPlayer() {
@@ -301,4 +309,9 @@ public class MyVideoPlayer {
 		}
 		return duration;
 	}
+
+	private class Loaded{
+		public boolean isLoaded = false;
+	}
+
 }

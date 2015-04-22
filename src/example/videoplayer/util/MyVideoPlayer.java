@@ -126,9 +126,10 @@ public class MyVideoPlayer {
 
 
 						MyVideoPlayer.this.nextPlayer.setDataSource(urlList.get(i));
-						cachePlayerList.add(nextPlayer);
+						
 						try {
 							cachePlayerList.get(i-1).prepareAsync();
+							cachePlayerList.add(nextPlayer);
 							cachePlayerList.get(i-1).setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 								@Override
 								public void onPrepared(MediaPlayer mediaPlayer) {
@@ -137,9 +138,9 @@ public class MyVideoPlayer {
 									Log.e("prepared", String.valueOf(currentVideoIndex));
 									if(isCompleted){
 										try {
-											mediaPlayer.setDisplay(surfaceHolder);
-											mediaPlayer.start();
+											playNext(mediaPlayer, surfaceHolder);
 											isCompleted = false;
+											Log.e("VideoComplete", String.valueOf(isCompleted));
 										} catch (Exception e) { e.printStackTrace();}
 									}									
 								}
@@ -161,11 +162,15 @@ public class MyVideoPlayer {
 	}
 
 	private void onVideoComplete(MediaPlayer mediaPlayer, final SurfaceHolder surfaceHolder) {
+			this.playNext(mediaPlayer, surfaceHolder);
+			this.isCompleted = true;
+			Log.e("VideoComplete", String.valueOf(isCompleted));
+	}
 
+	private void playNext(MediaPlayer mediaPlayer, final SurfaceHolder surfaceHolder){
 		try {
 			mediaPlayer.setDisplay(null);
 			currentPlayer.setDisplay(null);
-//			mediaPlayer.release();
 			Log.e("listener complete top", String.valueOf(currentVideoIndex));
 			if (currentVideoIndex < urlList.size() - 1) {
 				currentPlayer = cachePlayerList.get(currentVideoIndex);
@@ -183,9 +188,10 @@ public class MyVideoPlayer {
 			e.printStackTrace();
 		}
 		currentVideoIndex++;
-		this.isCompleted = true;
-	}
 
+		
+	}
+	
 	public MediaPlayer getCurrentPlayer() {
 		return currentPlayer;
 	}

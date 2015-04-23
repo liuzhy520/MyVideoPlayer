@@ -50,3 +50,17 @@ Temporary Items
 .idea/misc.xml
 .idea/modules.xml
 .idea/scopes/scope_settings.xml
+bin/classes.dex
+*.class
+bin/classes.dex
+bin/classes.dex
+*.class
+*.class
+bin/resources.ap_
+*.dex
+bin/classes.dex
+bin/classes/example/videoplayer/util/MyVideoPlayer$4$2.class
+bin/classes/example/videoplayer/util/MyVideoPlayer$4.class
+bin/classes/example/videoplayer/util/MyVideoPlayer.class
+bin/MyActivity.apk
+bin/resources.ap_

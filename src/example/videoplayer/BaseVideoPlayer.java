@@ -31,6 +31,7 @@ import example.videoplayer.util.*;
  * 3. P/L switch calculation
  *  
  */
+@SuppressWarnings("unused")
 public class BaseVideoPlayer extends RelativeLayout{
     protected Context context;
     protected RelativeLayout parentView;
@@ -82,7 +83,8 @@ public class BaseVideoPlayer extends RelativeLayout{
         Log.v("BaseVideo", ">>>created! time:" + System.currentTimeMillis());
     }
 
-    protected void setDisplay(ArrayList<String> path){
+    @SuppressWarnings("deprecation")
+	protected void setDisplay(ArrayList<String> path){
         myVideoPlayer = new MyVideoPlayer(path);
         this.surfaceHolder = this.surfaceView.getHolder();
 

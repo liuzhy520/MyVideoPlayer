@@ -24,7 +24,7 @@ public class UseWidgetActivity extends Activity {
         VideoPlayer = (VideoPlayer) findViewById(R.id.base_video_player);
         ArrayList<String> path = new ArrayList<String>();
         path.add("http://v.ysbang.cn/data/test/test0.mp4");
-        path.add("http://v.ysbang.cn/data/test/test0.mp4");
+//        path.add("http://v.ysbang.cn/data/test/test0.mp4");
 //        path.add("http://live.3gv.ifeng.com/zixun.m3u8");
         path.add("http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4");
 

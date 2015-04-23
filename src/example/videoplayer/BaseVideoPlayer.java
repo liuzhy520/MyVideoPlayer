@@ -84,13 +84,14 @@ public class BaseVideoPlayer extends RelativeLayout{
     }
 
     @SuppressWarnings("deprecation")
-	protected void setDisplay(ArrayList<String> path){
+	public void setDisplay(ArrayList<String> path){
         myVideoPlayer = new MyVideoPlayer(path);
         this.surfaceHolder = this.surfaceView.getHolder();
-
+        final boolean isCompleted = false;
+        boolean isPrepared = false;
                 BaseVideoPlayer.this.surfaceHolder.addCallback(new SurfaceHolder.Callback() {
                     @Override
-                    public void surfaceCreated( SurfaceHolder surfaceHolder) {
+                    public void surfaceCreated( final SurfaceHolder surfaceHolder) {
                         myVideoPlayer.loadFirstVideo(surfaceHolder, new MyVideoPlayer.onPreparedListener() {
                             @Override
                             public void onPrepared(MediaPlayer mediaPlayer) {
@@ -98,14 +99,52 @@ public class BaseVideoPlayer extends RelativeLayout{
                                 fixPLViews();
                                 try {
                                     progressBar.setVisibility(GONE);
-                                    maskImage.setVisibility(GONE);
-                                } catch (Exception e) {e.printStackTrace();}
+                                    if (null != maskImage) {
+                                        maskImage.setVisibility(GONE);
+                                    }
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
                                 Log.v("BaseVideo", ">>>start! time:" + System.currentTimeMillis());
-                                Log.v("BaseVideo", ">>>video duration:" +  myVideoPlayer.getCurrentVideoDuration());
+                                Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
+                            }
+                        }, new MyVideoPlayer.onVideoFinishListener() {
+                            @Override
+                            public void onFinish(MediaPlayer mediaPlayer) {
+                                progressBar.setVisibility(VISIBLE);
+                                if (null != maskImage) {
+                                    maskImage.setVisibility(VISIBLE);
+                                }
+                                mediaPlayer.setDisplay(null);
+                                mediaPlayer.stop();
+                                mediaPlayer.release();
+                                myVideoPlayer.loadNextVideo(surfaceHolder, new MyVideoPlayer.onVideoFinishListener() {
+                                    @Override
+                                    public void onFinish(MediaPlayer mediaPlayer) {
+                                    }
+                                }, new MyVideoPlayer.onPreparedListener() {
+                                    @Override
+                                    public void onPrepared(MediaPlayer mediaPlayer) {
+                                        progressBar.setVisibility(GONE);
+                                        if (null != maskImage) {
+                                            maskImage.setVisibility(GONE);
+                                        }
+                                        try {
+                                            myVideoPlayer.currentPlayer.reset();
+                                        }catch (Exception e) {e.printStackTrace();}
+                                        myVideoPlayer.currentPlayer = mediaPlayer;
+                                        mediaPlayer.setDisplay(surfaceHolder);
+                                        mediaPlayer.start();
+                                        fixPLViews();
+                                    }
+                                });
+
                             }
                         });
-                        myVideoPlayer.loadMorePlayerThread(surfaceHolder);
+
+//                        myVideoPlayer.loadMorePlayerThread(surfaceHolder);
                     }
 
                     @Override
@@ -158,6 +197,21 @@ public class BaseVideoPlayer extends RelativeLayout{
                 }
             }
         }.enable();
+
+        myVideoPlayer.getCurrentPlayer().setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                if(i == MediaPlayer.MEDIA_ERROR_UNKNOWN){
+                    Toast.makeText(context, "cannot play the video, please try again", Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(context, String.valueOf(i), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
+    public void setOnCompleteListener(MyVideoPlayer.onVideoFinishListener listener){
+        listener = myVideoPlayer.finishListener;
     }
 
     /** this is a method for full screen button **/

@@ -84,65 +84,16 @@ public class BaseVideoPlayer extends RelativeLayout{
     }
 
     @SuppressWarnings("deprecation")
-	public void setDisplay(ArrayList<String> path){
+	public void setDisplay(final ArrayList<String> path){
         myVideoPlayer = new MyVideoPlayer(path);
         this.surfaceHolder = this.surfaceView.getHolder();
+        this.surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         final boolean isCompleted = false;
         boolean isPrepared = false;
                 BaseVideoPlayer.this.surfaceHolder.addCallback(new SurfaceHolder.Callback() {
                     @Override
                     public void surfaceCreated( final SurfaceHolder surfaceHolder) {
-                        myVideoPlayer.loadFirstVideo(surfaceHolder, new MyVideoPlayer.onPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mediaPlayer) {
-                                mediaPlayer.start();
-                                fixPLViews();
-                                try {
-                                    progressBar.setVisibility(GONE);
-                                    if (null != maskImage) {
-                                        maskImage.setVisibility(GONE);
-                                    }
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                                Log.v("BaseVideo", ">>>start! time:" + System.currentTimeMillis());
-                                Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
-                            }
-                        }, new MyVideoPlayer.onVideoFinishListener() {
-                            @Override
-                            public void onFinish(MediaPlayer mediaPlayer) {
-                                progressBar.setVisibility(VISIBLE);
-                                if (null != maskImage) {
-                                    maskImage.setVisibility(VISIBLE);
-                                }
-                                mediaPlayer.setDisplay(null);
-                                mediaPlayer.stop();
-                                mediaPlayer.release();
-                                myVideoPlayer.loadNextVideo(surfaceHolder, new MyVideoPlayer.onVideoFinishListener() {
-                                    @Override
-                                    public void onFinish(MediaPlayer mediaPlayer) {
-                                    }
-                                }, new MyVideoPlayer.onPreparedListener() {
-                                    @Override
-                                    public void onPrepared(MediaPlayer mediaPlayer) {
-                                        progressBar.setVisibility(GONE);
-                                        if (null != maskImage) {
-                                            maskImage.setVisibility(GONE);
-                                        }
-                                        try {
-                                            myVideoPlayer.currentPlayer.reset();
-                                        }catch (Exception e) {e.printStackTrace();}
-                                        myVideoPlayer.currentPlayer = mediaPlayer;
-                                        mediaPlayer.setDisplay(surfaceHolder);
-                                        mediaPlayer.start();
-                                        fixPLViews();
-                                    }
-                                });
-
-                            }
-                        });
+                        playVideos(path);
 
 //                        myVideoPlayer.loadMorePlayerThread(surfaceHolder);
                     }
@@ -163,7 +114,6 @@ public class BaseVideoPlayer extends RelativeLayout{
                     }
                 });
 
-        this.surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
 
         new OrientationEventListener(context){
@@ -206,6 +156,61 @@ public class BaseVideoPlayer extends RelativeLayout{
                 }
                 Toast.makeText(context, String.valueOf(i), Toast.LENGTH_SHORT).show();
                 return false;
+            }
+        });
+    }
+
+    public void playVideos(ArrayList<String> path){
+        myVideoPlayer = new MyVideoPlayer(path);
+        myVideoPlayer.loadFirstVideo(surfaceHolder, new MyVideoPlayer.onPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.start();
+                fixPLViews();
+                try {
+                    progressBar.setVisibility(GONE);
+                    if (null != maskImage) {
+                        maskImage.setVisibility(GONE);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Log.v("BaseVideo", ">>>start! time:" + System.currentTimeMillis());
+                Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
+            }
+        }, new MyVideoPlayer.onVideoFinishListener() {
+            @Override
+            public void onFinish(MediaPlayer mediaPlayer) {
+                progressBar.setVisibility(VISIBLE);
+                if (null != maskImage) {
+                    maskImage.setVisibility(VISIBLE);
+                }
+                mediaPlayer.setDisplay(null);
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                myVideoPlayer.loadNextVideo(surfaceHolder, new MyVideoPlayer.onVideoFinishListener() {
+                    @Override
+                    public void onFinish(MediaPlayer mediaPlayer) {
+                    }
+                }, new MyVideoPlayer.onPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        progressBar.setVisibility(GONE);
+                        if (null != maskImage) {
+                            maskImage.setVisibility(GONE);
+                        }
+                        try {
+                            myVideoPlayer.currentPlayer.reset();
+                        }catch (Exception e) {e.printStackTrace();}
+                        myVideoPlayer.currentPlayer = mediaPlayer;
+                        mediaPlayer.setDisplay(surfaceHolder);
+                        mediaPlayer.start();
+                        fixPLViews();
+                    }
+                });
+
             }
         });
     }

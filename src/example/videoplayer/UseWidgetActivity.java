@@ -35,7 +35,13 @@ public class UseWidgetActivity extends Activity {
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                VideoPlayer.setFullScreenSwitcher();
+//                VideoPlayer.setFullScreenSwitcher();
+                ArrayList<String> path = new ArrayList<String>();
+                path.add("http://v.ysbang.cn/data/test/test0.mp4");
+                path.add("http://live.3gv.ifeng.com/zixun.m3u8");
+                VideoPlayer.stop();
+                VideoPlayer.release();
+                VideoPlayer.playVideos(path);
             }
         });
 

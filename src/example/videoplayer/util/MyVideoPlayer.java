@@ -136,10 +136,10 @@ public class MyVideoPlayer {
 									cachePlayer = mediaPlayer;
 									Log.e("prepared", String.valueOf(currentVideoIndex));
 									isLoaded = true;
-									synchronized (syncFlag){
-										syncFlag.isLoaded = true;
-										syncFlag.notifyAll();
-									}
+//									synchronized (syncFlag){
+//										syncFlag.isLoaded = true;
+//										syncFlag.notifyAll();
+//									}
 								}
 							});
 
@@ -166,13 +166,13 @@ public class MyVideoPlayer {
 			Log.e("listener complete top", String.valueOf(currentVideoIndex));
 			if (currentVideoIndex < urlList.size() - 1) {
 				currentPlayer = cachePlayerList.get(currentVideoIndex);
-				synchronized (syncFlag) {
-					while (!syncFlag.isLoaded){
-//						try {
-						syncFlag.wait(1000);
-//						} catch (Exception e) {e.printStackTrace();}
-					}
-				}
+//				synchronized (syncFlag) {
+//					while (!syncFlag.isLoaded){
+////						try {
+//						syncFlag.wait(1000);
+////						} catch (Exception e) {e.printStackTrace();}
+//					}
+//				}
 				currentPlayer.setDisplay(surfaceHolder);
 
 				Log.e("listener complete", String.valueOf(currentVideoIndex));

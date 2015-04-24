@@ -3,8 +3,10 @@ package example.videoplayer;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import example.videoplayer.util.MyVideoPlayer;
 
 import java.util.ArrayList;
@@ -22,26 +24,34 @@ public class UseWidgetActivity extends Activity {
 
     private void init(){
         VideoPlayer = (VideoPlayer) findViewById(R.id.base_video_player);
-        ArrayList<String> path = new ArrayList<String>();
-        path.add("http://v.ysbang.cn/data/test/test0.mp4");
-//        path.add("http://v.ysbang.cn/data/test/test0.mp4");
-//        path.add("http://live.3gv.ifeng.com/zixun.m3u8");
-        path.add("http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4");
-
-
-//        path.add("http://live.3gv.ifeng.com/live/hongkong.m3u8");
-        VideoPlayer.setDisplay(path);
         TextView text = (TextView) findViewById(R.id.text);
+        TextView text1 = (TextView) findViewById(R.id.text1);
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                VideoPlayer.setFullScreenSwitcher();
-                ArrayList<String> path = new ArrayList<String>();
-                path.add("http://v.ysbang.cn/data/test/test0.mp4");
-                path.add("http://live.3gv.ifeng.com/zixun.m3u8");
+                ArrayList<MyVideoPlayer.VideoInfo> path = new ArrayList<MyVideoPlayer.VideoInfo>();
+                MyVideoPlayer.VideoInfo video = new MyVideoPlayer.VideoInfo();
+                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
+                video.isAd = true;
+
+                path.add(video);
+                video = new MyVideoPlayer.VideoInfo();
+//                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
+                video.sourceUrl = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
+                video.isAd = false;
+                path.add(video);
+//                path.add("http://live.3gv.ifeng.com/zixun.m3u8");
                 VideoPlayer.stop();
                 VideoPlayer.release();
-                VideoPlayer.playVideos(path);
+                VideoPlayer.setDisplay(path);
+            }
+        });
+        text1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(UseWidgetActivity.this, String.valueOf(VideoPlayer.getVideoInfo().isAd), Toast.LENGTH_SHORT).show();
+                Log.e("duration", String.valueOf(VideoPlayer.getCurrentVideoDuration()));
             }
         });
 

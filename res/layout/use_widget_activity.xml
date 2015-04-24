@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
                 <example.videoplayer.VideoPlayer
                     android:id="@+id/base_video_player"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                        />
+
+</LinearLayout>
     <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="22sp"
-            android:text="activity content"
+            android:text="play video"
             />
-</LinearLayout>
+    <TextView             android:id="@+id/text1"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginLeft="200dp"
+                          android:textSize="22sp"
+                          android:text="show something"/>
+</RelativeLayout>

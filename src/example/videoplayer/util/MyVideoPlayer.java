@@ -31,7 +31,7 @@ public class MyVideoPlayer {
 	ArrayList<MediaPlayer> cachePlayerList;
 
 	/** to store all incoming urls **/
-	private ArrayList<String> urlList;
+	private ArrayList<VideoInfo> urlList;
 
 	/** current video index **/
 	private int currentVideoIndex;
@@ -55,17 +55,17 @@ public class MyVideoPlayer {
 		}
 	};
 
-	public MyVideoPlayer(ArrayList<String> paths) {
+	public MyVideoPlayer(ArrayList<VideoInfo> paths) {
 		/** Initialize values and objects **/
 		cachePlayerList = new ArrayList<MediaPlayer>();
 		currentPlayer = new MediaPlayer();
 		
-		urlList = new ArrayList<String>();
+		urlList = new ArrayList<VideoInfo>();
 		currentVideoIndex = 0;
 		setVideos(paths);
 	}
 
-	public void setVideos(ArrayList<String> paths) {
+	public void setVideos(ArrayList<VideoInfo> paths) {
 		try {
 			this.urlList = paths;
 		} catch (Exception e) {
@@ -80,7 +80,7 @@ public class MyVideoPlayer {
 				try {
 					Log.v("BaseVideo",">>>start prepare:" + System.currentTimeMillis());
 
-					MyVideoPlayer.this.currentPlayer.setDataSource(urlList.get(0));
+					MyVideoPlayer.this.currentPlayer.setDataSource(urlList.get(0).sourceUrl);
 					MyVideoPlayer.this.currentPlayer.setDisplay(surfaceHolder);
 					currentPlayer.setScreenOnWhilePlaying(true);
 					MyVideoPlayer.this.currentPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
@@ -118,7 +118,7 @@ public class MyVideoPlayer {
 		MyVideoPlayer.this.currentPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer mediaPlayer) {
-				listener.onPrepared(mediaPlayer);
+				listener.onPrepared(currentPlayer);
 			}
 		});
 
@@ -141,7 +141,7 @@ public class MyVideoPlayer {
 						});
 
 
-						MyVideoPlayer.this.nextPlayer.setDataSource(urlList.get(i));
+						MyVideoPlayer.this.nextPlayer.setDataSource(urlList.get(i).sourceUrl);
 						
 						try {
 							MyVideoPlayer.this.nextPlayer.prepareAsync();
@@ -195,9 +195,9 @@ public class MyVideoPlayer {
 			public void run() {
 				try {
 					Log.v("BaseVideo",">>>start prepare:" + System.currentTimeMillis());
-					MyVideoPlayer.this.nextPlayer.setDataSource(urlList.get(1));
+					MyVideoPlayer.this.nextPlayer.setDataSource(urlList.get(1).sourceUrl);
 					MyVideoPlayer.this.nextPlayer.setDisplay(surfaceHolder);
-					nextPlayer.setScreenOnWhilePlaying(true);
+					currentPlayer.setScreenOnWhilePlaying(true);
 					MyVideoPlayer.this.nextPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
 						@Override
 						public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
@@ -231,9 +231,10 @@ public class MyVideoPlayer {
 			@Override
 			public void onPrepared(MediaPlayer mediaPlayer) {
 				nextPlayer.start();
-				onPreparedListener.onPrepared(mediaPlayer);
+				onPreparedListener.onPrepared(nextPlayer);
 			}
 		});
+//		currentPlayer = nextPlayer;
 	}
 
 	private void onVideoComplete(MediaPlayer mediaPlayer, final SurfaceHolder surfaceHolder) {
@@ -399,5 +400,12 @@ public class MyVideoPlayer {
 		msg.what = what;
 		msg.obj = obj;
 		mHandler.sendMessage(msg);
+	}
+	public static class VideoInfo{
+		public String sourceUrl = "";
+		public String title = "";
+		public String desc = "";
+		public int duration = 0;
+		public boolean isAd = false;
 	}
 }

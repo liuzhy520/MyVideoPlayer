@@ -26,7 +26,17 @@ public class VideoPlayer extends BaseVideoPlayer {
 
     @Override
     public void fixPortraitUI() {
-        Toast.makeText(context, "Portrait", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "Portrait", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onVideoChanged() {
+        Toast.makeText(context, "changed & duration:" + getCurrentVideoDuration(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onVideoFinished() {
+        Toast.makeText(context, "finished", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -48,6 +58,7 @@ public class VideoPlayer extends BaseVideoPlayer {
         });
         Log.v("BaseVideo", ">>>created! time:" + System.currentTimeMillis());
     }
+
 
 
 }

@@ -1,26 +1,20 @@
 package example.videoplayer;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.media.Image;
 import android.media.MediaPlayer;
-import android.os.AsyncTask;
-import android.os.Bundle;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-import example.videoplayer.util.*;
+import android.widget.*;
+import example.videoplayer.util.MyVideoPlayer;
+
+import java.util.ArrayList;
+
 
 /**
  * Created by Wayne on 2015/4/17.
@@ -29,7 +23,7 @@ import example.videoplayer.util.*;
  * 1. video IO/Streaming
  * 2. AD/Content preloading 
  * 3. P/L switch calculation
- *  
+ *
  */
 @SuppressWarnings("unused")
 public class BaseVideoPlayer extends RelativeLayout{
@@ -46,75 +40,109 @@ public class BaseVideoPlayer extends RelativeLayout{
     protected boolean isPause = false;
     protected boolean isLandscape = false;
     protected boolean isFullScreenClick = false;
+    protected boolean hasActiveHolder = false;
+    private ArrayList<String> path = new ArrayList<String>();
+    private MyVideoPlayer.VideoInfo currentVideoInfo;
+    private int currentDuration = 0;
     // VideoPlayer
     private MyVideoPlayer myVideoPlayer;
     /** listeners **/
+
+    /** handler **/
+    private android.os.Handler mHandler = new android.os.Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+
+        }
+    };
     public BaseVideoPlayer(Context context){
         super(context);
         this.context = context;
         init();
+        initSurfaceHolder();
+        currentVideoInfo = new MyVideoPlayer.VideoInfo();
     }
     public BaseVideoPlayer(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         init();
+        initSurfaceHolder();
+        currentVideoInfo = new MyVideoPlayer.VideoInfo();
     }
 
     /** fix UI here **/
     public void fixLandscapeUI(){}
     public void fixPortraitUI(){}
 
+    /** do something in here when the video changed **/
+    public void onVideoChanged(){}
+
+    /** do something in here when the video is finished **/
+    public void onVideoFinished(){}
+
     protected void init(){
-    	parentView = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.base_video_view, this);
+        parentView = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.base_video_view, this);
         surfaceView = (SurfaceView) parentView.findViewById(R.id.video_surface);
         progressBar = (ProgressBar) parentView.findViewById(R.id.base_video_progressBar);
         surfaceView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-				if(!isPause){
-					pause();
-					isPause = true;
-				}else{
-					start();
-					isPause = false;
-				}
+                if(!isPause){
+                    pause();
+                    isPause = true;
+                }else{
+                    start();
+                    isPause = false;
+                }
             }
         });
         Log.v("BaseVideo", ">>>created! time:" + System.currentTimeMillis());
     }
 
     @SuppressWarnings("deprecation")
-	public void setDisplay(final ArrayList<String> path){
-        myVideoPlayer = new MyVideoPlayer(path);
+    public void setDisplay(final ArrayList<MyVideoPlayer.VideoInfo> path){
+        try {
+//            myVideoPlayer.currentPlayer.setDisplay(null);
+            myVideoPlayer.stop();
+            myVideoPlayer.releaseAll();
+        }catch (Exception e){e.printStackTrace();}
+
+        playVideos(path);
+    }
+
+    private void initSurfaceHolder(){
         this.surfaceHolder = this.surfaceView.getHolder();
         this.surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         final boolean isCompleted = false;
         boolean isPrepared = false;
-                BaseVideoPlayer.this.surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-                    @Override
-                    public void surfaceCreated( final SurfaceHolder surfaceHolder) {
-                        playVideos(path);
+        BaseVideoPlayer.this.surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated( final SurfaceHolder surfaceHolder) {
+                synchronized(this) {
+                    hasActiveHolder = true;
+                    this.notifyAll();
+                }
+            }
 
-//                        myVideoPlayer.loadMorePlayerThread(surfaceHolder);
-                    }
+            @Override
+            public void surfaceChanged(final SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
-                    @Override
-                    public void surfaceChanged(final SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+            }
 
-                    }
-
-                    @Override
-                    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                        if (null != myVideoPlayer.getCurrentPlayer()) {
-                            myVideoPlayer.releaseAll();
-                            synchronized(this) {
-                                this.notifyAll();
-                            }
+            @Override
+            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                try {
+                    if (myVideoPlayer.getCurrentPlayer() != null) {
+                        myVideoPlayer.releaseAll();
+                        synchronized(this) {
+                            hasActiveHolder = false;
+                            this.notifyAll();
                         }
                     }
-                });
+                }catch (Exception e) {e.printStackTrace();}
 
-
+            }
+        });
 
         new OrientationEventListener(context){
 
@@ -148,24 +176,20 @@ public class BaseVideoPlayer extends RelativeLayout{
             }
         }.enable();
 
-        myVideoPlayer.getCurrentPlayer().setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                if(i == MediaPlayer.MEDIA_ERROR_UNKNOWN){
-                    Toast.makeText(context, "cannot play the video, please try again", Toast.LENGTH_SHORT).show();
-                }
-                Toast.makeText(context, String.valueOf(i), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
     }
 
-    public void playVideos(ArrayList<String> path){
+    public void playVideos(final ArrayList<MyVideoPlayer.VideoInfo> path){
         myVideoPlayer = new MyVideoPlayer(path);
+
         myVideoPlayer.loadFirstVideo(surfaceHolder, new MyVideoPlayer.onPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
+                currentVideoInfo = path.get(0);
+
+                currentDuration = mediaPlayer.getDuration();
+                getCurrentVideoDuration();
+                onVideoChanged();
                 fixPLViews();
                 try {
                     progressBar.setVisibility(GONE);
@@ -179,6 +203,7 @@ public class BaseVideoPlayer extends RelativeLayout{
 
                 Log.v("BaseVideo", ">>>start! time:" + System.currentTimeMillis());
                 Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
+
             }
         }, new MyVideoPlayer.onVideoFinishListener() {
             @Override
@@ -193,6 +218,7 @@ public class BaseVideoPlayer extends RelativeLayout{
                 myVideoPlayer.loadNextVideo(surfaceHolder, new MyVideoPlayer.onVideoFinishListener() {
                     @Override
                     public void onFinish(MediaPlayer mediaPlayer) {
+                        onVideoFinished();
                     }
                 }, new MyVideoPlayer.onPreparedListener() {
                     @Override
@@ -203,20 +229,37 @@ public class BaseVideoPlayer extends RelativeLayout{
                         }
                         try {
                             myVideoPlayer.currentPlayer.reset();
-                        }catch (Exception e) {e.printStackTrace();}
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         myVideoPlayer.currentPlayer = mediaPlayer;
                         mediaPlayer.setDisplay(surfaceHolder);
                         mediaPlayer.start();
+                        currentDuration = mediaPlayer.getDuration();
+                        currentVideoInfo = path.get(1);
+                        onVideoChanged();
                         fixPLViews();
+                        Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
                     }
                 });
 
             }
         });
+        myVideoPlayer.getCurrentPlayer().setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                if (i == MediaPlayer.MEDIA_ERROR_UNKNOWN) {
+                    Toast.makeText(context, "cannot play the video, please try again", Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(context, String.valueOf(i), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
     }
 
-    public void setOnCompleteListener(MyVideoPlayer.onVideoFinishListener listener){
-        listener = myVideoPlayer.finishListener;
+    /** get the information of the current video **/
+    public MyVideoPlayer.VideoInfo getVideoInfo(){
+        return currentVideoInfo;
     }
 
     /** this is a method for full screen button **/
@@ -259,7 +302,7 @@ public class BaseVideoPlayer extends RelativeLayout{
 
     public void release() {
         try {
-          myVideoPlayer.releaseAll();
+            myVideoPlayer.releaseAll();
             Log.v("BaseVideo", ">>>release! time:" + System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
@@ -289,7 +332,8 @@ public class BaseVideoPlayer extends RelativeLayout{
     public int getCurrentVideoDuration() {
         int duration = 0;
         try {
-            duration = myVideoPlayer.getCurrentVideoDuration();
+//            duration = myVideoPlayer.getCurrentVideoDuration();
+            duration = currentDuration;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -310,8 +354,10 @@ public class BaseVideoPlayer extends RelativeLayout{
         int screenW = dm.widthPixels;
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) this.surfaceView.getLayoutParams();
         LinearLayout.LayoutParams parentParam = (LinearLayout.LayoutParams) this.parentView.getLayoutParams();
-        this.videoWidth = this.myVideoPlayer.getVideoWidth();
-        this.videoHeight = this.myVideoPlayer.getVideoHeight();
+        try {
+            this.videoWidth = this.myVideoPlayer.getVideoWidth();
+            this.videoHeight = this.myVideoPlayer.getVideoHeight();
+        }catch (Exception e) {e.printStackTrace();}
         if(screenH > screenW){  // portrait
             try {
                 /** video view **/
@@ -347,4 +393,10 @@ public class BaseVideoPlayer extends RelativeLayout{
 
     }
 
+    private void sendMessage(int what, Object obj){
+        Message msg = new Message();
+        msg.what = what;
+        msg.obj = obj;
+        mHandler.sendMessage(msg);
+    }
 }

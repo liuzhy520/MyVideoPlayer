@@ -50,7 +50,7 @@ public class UseWidgetActivity extends Activity {
         text1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(UseWidgetActivity.this, String.valueOf(VideoPlayer.getVideoInfo().isAd), Toast.LENGTH_SHORT).show();
+                Toast.makeText(UseWidgetActivity.this, String.valueOf(VideoPlayer.isVideoPlaying()), Toast.LENGTH_SHORT).show();
                 Log.e("duration", String.valueOf(VideoPlayer.getCurrentVideoDuration()));
             }
         });

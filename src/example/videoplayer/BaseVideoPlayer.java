@@ -41,6 +41,7 @@ public class BaseVideoPlayer extends RelativeLayout{
     protected boolean isLandscape = false;
     protected boolean isFullScreenClick = false;
     protected boolean hasActiveHolder = false;
+    protected MediaPlayer currentMediaPlayer;
     private ArrayList<String> path = new ArrayList<String>();
     private MyVideoPlayer.VideoInfo currentVideoInfo;
     private int currentDuration = 0;
@@ -186,8 +187,8 @@ public class BaseVideoPlayer extends RelativeLayout{
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
                 currentVideoInfo = path.get(0);
-
                 currentDuration = mediaPlayer.getDuration();
+                currentMediaPlayer = mediaPlayer;
                 getCurrentVideoDuration();
                 onVideoChanged();
                 fixPLViews();
@@ -237,6 +238,7 @@ public class BaseVideoPlayer extends RelativeLayout{
                         mediaPlayer.start();
                         currentDuration = mediaPlayer.getDuration();
                         currentVideoInfo = path.get(1);
+                        currentMediaPlayer = mediaPlayer;
                         onVideoChanged();
                         fixPLViews();
                         Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
@@ -255,6 +257,15 @@ public class BaseVideoPlayer extends RelativeLayout{
                 return false;
             }
         });
+    }
+
+    /** check is playing **/
+    public boolean isVideoPlaying(){
+        boolean isPlaying = false;
+        try {
+            isPlaying = currentMediaPlayer.isPlaying();
+        }catch (Exception e){e.printStackTrace();}
+        return isPlaying;
     }
 
     /** get the information of the current video **/

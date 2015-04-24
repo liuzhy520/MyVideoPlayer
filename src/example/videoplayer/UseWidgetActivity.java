@@ -38,10 +38,11 @@ public class UseWidgetActivity extends Activity {
                 path.add(video);
                 video = new MyVideoPlayer.VideoInfo();
 //                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
-                video.sourceUrl = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
+                video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
+//                video.sourceUrl = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
+
                 video.isAd = false;
                 path.add(video);
-//                path.add("http://live.3gv.ifeng.com/zixun.m3u8");
                 VideoPlayer.stop();
                 VideoPlayer.release();
                 VideoPlayer.setDisplay(path);
@@ -64,6 +65,7 @@ public class UseWidgetActivity extends Activity {
 
     public void onResume(){
         super.onResume();
+//        setContentView(R.layout.use_widget_activity);
     }
 
     public void onPause(){

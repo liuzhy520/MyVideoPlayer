@@ -346,6 +346,7 @@ public class BaseVideoPlayer extends RelativeLayout{
 //            duration = myVideoPlayer.getCurrentVideoDuration();
             duration = currentDuration;
         } catch (Exception e) {
+
             e.printStackTrace();
         }
         return duration;

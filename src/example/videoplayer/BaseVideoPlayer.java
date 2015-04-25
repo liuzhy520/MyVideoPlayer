@@ -26,7 +26,7 @@ import java.util.ArrayList;
  *
  */
 @SuppressWarnings("unused")
-public class BaseVideoPlayer extends RelativeLayout{
+public abstract class BaseVideoPlayer extends RelativeLayout{
     protected Context context;
     protected RelativeLayout parentView;
     // widgets
@@ -41,6 +41,7 @@ public class BaseVideoPlayer extends RelativeLayout{
     protected boolean isLandscape = false;
     protected boolean isFullScreenClick = false;
     protected boolean hasActiveHolder = false;
+    protected boolean isLoaded = false;
     protected MediaPlayer currentMediaPlayer;
     private ArrayList<String> path = new ArrayList<String>();
     private MyVideoPlayer.VideoInfo currentVideoInfo;
@@ -48,7 +49,7 @@ public class BaseVideoPlayer extends RelativeLayout{
     // VideoPlayer
     private MyVideoPlayer myVideoPlayer;
     /** listeners **/
-
+    private onCompleteInitializeListener completeListener;
     /** handler **/
     private android.os.Handler mHandler = new android.os.Handler(){
         @Override
@@ -72,40 +73,26 @@ public class BaseVideoPlayer extends RelativeLayout{
     }
 
     /** fix UI here **/
-    public void fixLandscapeUI(){}
-    public void fixPortraitUI(){}
+    public abstract void fixLandscapeUI();
+    public abstract void fixPortraitUI();
 
     /** do something in here when the video changed **/
-    public void onVideoChanged(){}
+    public abstract void onVideoChanged();
 
     /** do something in here when the video is finished **/
-    public void onVideoFinished(){}
+    public abstract void onVideoFinished();
 
-    protected void init(){
-        parentView = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.base_video_view, this);
-        surfaceView = (SurfaceView) parentView.findViewById(R.id.video_surface);
-        progressBar = (ProgressBar) parentView.findViewById(R.id.base_video_progressBar);
-        surfaceView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!isPause){
-                    pause();
-                    isPause = true;
-                }else{
-                    start();
-                    isPause = false;
-                }
-            }
-        });
-        Log.v("BaseVideo", ">>>created! time:" + System.currentTimeMillis());
-    }
+    /** initialize the view  **/
+    protected abstract void init();
 
     @SuppressWarnings("deprecation")
     public void setDisplay(final ArrayList<MyVideoPlayer.VideoInfo> path){
         try {
 //            myVideoPlayer.currentPlayer.setDisplay(null);
-            myVideoPlayer.stop();
-            myVideoPlayer.releaseAll();
+        	if(isVideoPlaying()){
+                myVideoPlayer.stop();
+                myVideoPlayer.releaseAll();
+        	}
         }catch (Exception e){e.printStackTrace();}
 
         playVideos(path);
@@ -122,6 +109,9 @@ public class BaseVideoPlayer extends RelativeLayout{
                 synchronized(this) {
                     hasActiveHolder = true;
                     this.notifyAll();
+                }
+                if(completeListener != null){
+                	completeListener.onComplete(surfaceHolder);
                 }
             }
 
@@ -150,30 +140,32 @@ public class BaseVideoPlayer extends RelativeLayout{
             @Override
             public void onOrientationChanged(int rotation) {
                 // TODO Auto-generated method stub
+            	if(isLoaded){
+            		 if(isLandscape && !isFullScreenClick){
+                         if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {
+                             ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                             isLandscape = false;
+                         }
+                     }else if(!isFullScreenClick && !isLandscape){
+                         if (((rotation >= 230) && (rotation <= 310))) {
+                             ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                             isLandscape = true;
+                         }
 
-                if(isLandscape && !isFullScreenClick){
-                    if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {
-                        ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                        isLandscape = false;
-                    }
-                }else if(!isFullScreenClick && !isLandscape){
-                    if (((rotation >= 230) && (rotation <= 310))) {
-                        ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                        isLandscape = true;
-                    }
-
-                }
-                if(isFullScreenClick){
-                    if(isLandscape){
-                        if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {     // Mark A
-                            isFullScreenClick = false;
-                        }
-                    }else {
-                        if (((rotation >= 230) && (rotation <= 310))) {
-                            isFullScreenClick = false;
-                        }
-                    }
-                }
+                     }
+                     if(isFullScreenClick){
+                         if(isLandscape){
+                             if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {     // Mark A
+                                 isFullScreenClick = false;
+                             }
+                         }else {
+                             if (((rotation >= 230) && (rotation <= 310))) {
+                                 isFullScreenClick = false;
+                             }
+                         }
+                     }
+            	}
+               
             }
         }.enable();
 
@@ -186,6 +178,7 @@ public class BaseVideoPlayer extends RelativeLayout{
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
+                isLoaded = true;
                 currentVideoInfo = path.get(0);
                 currentDuration = mediaPlayer.getDuration();
                 currentMediaPlayer = mediaPlayer;
@@ -216,10 +209,12 @@ public class BaseVideoPlayer extends RelativeLayout{
                 mediaPlayer.setDisplay(null);
                 mediaPlayer.stop();
                 mediaPlayer.release();
+                isLoaded = false;
                 myVideoPlayer.loadNextVideo(surfaceHolder, new MyVideoPlayer.onVideoFinishListener() {
                     @Override
                     public void onFinish(MediaPlayer mediaPlayer) {
                         onVideoFinished();
+                        isLoaded = false;
                     }
                 }, new MyVideoPlayer.onPreparedListener() {
                     @Override
@@ -236,6 +231,7 @@ public class BaseVideoPlayer extends RelativeLayout{
                         myVideoPlayer.currentPlayer = mediaPlayer;
                         mediaPlayer.setDisplay(surfaceHolder);
                         mediaPlayer.start();
+                        isLoaded = true;
                         currentDuration = mediaPlayer.getDuration();
                         currentVideoInfo = path.get(1);
                         currentMediaPlayer = mediaPlayer;
@@ -287,7 +283,7 @@ public class BaseVideoPlayer extends RelativeLayout{
     /** media player function widgets **/
     public void start() {
         try {
-            myVideoPlayer.start();
+            this.currentMediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -295,7 +291,7 @@ public class BaseVideoPlayer extends RelativeLayout{
 
     public void pause() {
         try {
-            myVideoPlayer.pause();
+        	this.currentMediaPlayer.pause();
             Log.v("BaseVideo", ">>>pause! time:" + System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
@@ -304,7 +300,7 @@ public class BaseVideoPlayer extends RelativeLayout{
 
     public void stop() {
         try {
-            myVideoPlayer.stop();
+        	this.currentMediaPlayer.stop();
             Log.v("BaseVideo", ">>>stop! time:" + System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
@@ -322,7 +318,7 @@ public class BaseVideoPlayer extends RelativeLayout{
 
     public void seekTo(int position) {
         try {
-            myVideoPlayer.seekTo(position);
+        	this.currentMediaPlayer.seekTo(position);
             Log.v("BaseVideo", ">>>seek to:" + position + " time:" + System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,7 +328,7 @@ public class BaseVideoPlayer extends RelativeLayout{
     public int getCurrentVideoPosition() {
         int position = 0;
         try {
-            position = myVideoPlayer.getCurrentVideoPosition();
+            position = this.currentMediaPlayer.getCurrentPosition();
             Log.v("BaseVideo", ">>>current position: " + position + " time:" + System.currentTimeMillis());
         } catch (Exception e) {
             e.printStackTrace();
@@ -356,7 +352,8 @@ public class BaseVideoPlayer extends RelativeLayout{
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        fixPLViews();
+            fixPLViews();
+
     }
 
     public void fixPLViews(){
@@ -381,8 +378,9 @@ public class BaseVideoPlayer extends RelativeLayout{
                 ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 ((Activity)context).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
-                fixPortraitUI();
+                
             }catch (Exception e){e.printStackTrace();}
+            fixPortraitUI();
 
         }else if(screenH < screenW){  // landscape
             try{
@@ -396,15 +394,24 @@ public class BaseVideoPlayer extends RelativeLayout{
                 ((Activity)context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
                 ((Activity)context).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-                fixLandscapeUI();
+                
             }catch (Exception e){e.printStackTrace();}
+            fixLandscapeUI();
         }
         try {
             this.surfaceHolder.setFixedSize(this.videoWidth, this.videoHeight);
         }catch (Exception e) {e.printStackTrace();}
 
     }
-
+    
+    public interface onCompleteInitializeListener{
+    	public void onComplete(SurfaceHolder surfaceHolder);
+    }
+    
+    public void setOnCompleteIntializeListener(onCompleteInitializeListener listener){
+    	this.completeListener = listener;
+    }
+    
     private void sendMessage(int what, Object obj){
         Message msg = new Message();
         msg.what = what;

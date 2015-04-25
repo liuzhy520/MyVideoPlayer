@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import example.videoplayer.BaseVideoPlayer.onCompleteInitializeListener;
 import example.videoplayer.util.MyVideoPlayer;
 
 import java.util.ArrayList;
@@ -38,8 +40,8 @@ public class UseWidgetActivity extends Activity {
                 path.add(video);
                 video = new MyVideoPlayer.VideoInfo();
 //                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
-                video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
-//                video.sourceUrl = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
+//                video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
+                video.sourceUrl = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
 
                 video.isAd = false;
                 path.add(video);
@@ -66,6 +68,14 @@ public class UseWidgetActivity extends Activity {
     public void onResume(){
         super.onResume();
 //        setContentView(R.layout.use_widget_activity);
+        VideoPlayer.setOnCompleteIntializeListener(new onCompleteInitializeListener(){
+
+			@Override
+			public void onComplete(SurfaceHolder surfaceHolder) {
+				// TODO Auto-generated method stub
+				Toast.makeText(UseWidgetActivity.this, "complete", Toast.LENGTH_SHORT).show();
+				
+			}});
     }
 
     public void onPause(){

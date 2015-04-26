@@ -15,6 +15,11 @@ import java.util.ArrayList;
 
 /**
  * Created by Wayne on 2015/4/20.
+ * video stream list:
+ * http://live.3gv.ifeng.com/live/hongkong.m3u8
+ * http://www.nasa.gov/multimedia/nasatv/NTV-Public-IPS.m3u8
+ * http://46.61.226.21/hls/CH_PLAYBOY/variant.m3u8?version=2
+ * 
  */
 public class UseWidgetActivity extends Activity {
     private VideoPlayer VideoPlayer;
@@ -41,7 +46,9 @@ public class UseWidgetActivity extends Activity {
                 video = new MyVideoPlayer.VideoInfo();
 //                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
 //                video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
-                video.sourceUrl = "http://live.3gv.ifeng.com/live/hongkong.m3u8";
+//              video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
+//                video.sourceUrl = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
+                video.sourceUrl = "http://legendwing.com/videos/video4.mp4";
 
                 video.isAd = false;
                 path.add(video);

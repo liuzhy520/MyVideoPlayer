@@ -24,8 +24,11 @@ public class MyVideoPlayer {
 							cachePlayer; // the Player in the cache waiting to play after it is
 	// prepared
 
+	/** surface holder **/
+	private SurfaceHolder surfaceHolder;
 	/** values **/
 	private boolean isCompleted = false;
+	private boolean isLoaded = false;
 	private final static int IS_COMPLETE = 0X00;
 	/** store videoPlayer list **/
 	ArrayList<MediaPlayer> cachePlayerList;
@@ -34,7 +37,7 @@ public class MyVideoPlayer {
 	private ArrayList<VideoInfo> urlList;
 
 	/** current video index **/
-	private int currentVideoIndex;
+	public int currentVideoIndex;
 
 	/** interfaces **/
 	public onVideoFinishListener finishListener;
@@ -48,6 +51,9 @@ public class MyVideoPlayer {
 			switch (msg.what){
 				case IS_COMPLETE:
 					Log.e("message", "sent");
+					if(isLoaded && isCompleted){
+						playNext(surfaceHolder);
+					}
 					break;
 				default:
 					break;
@@ -74,6 +80,7 @@ public class MyVideoPlayer {
 	}
 
 	public void loadFirstVideo(final SurfaceHolder surfaceHolder,final onPreparedListener listener, final onVideoFinishListener finishListener) {
+		this.surfaceHolder = surfaceHolder;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -110,8 +117,9 @@ public class MyVideoPlayer {
 		MyVideoPlayer.this.currentPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mediaPlayer) {
+				onVideoComplete();
 				finishListener.onFinish(mediaPlayer);
-//				onVideoComplete(mediaPlayer, surfaceHolder);
+
 			}
 		});
 
@@ -125,7 +133,8 @@ public class MyVideoPlayer {
 	}
 
 	/** using a arraylist to cache players to implement video preloading functionality **/
-	public void loadMorePlayerThread(final SurfaceHolder surfaceHolder) {
+	public void loadMorePlayerThread(final SurfaceHolder surfaceHolder, final onPreparedListener listener, final onVideoFinishListener finishListener) {
+		this.surfaceHolder = surfaceHolder;
 		new Thread(new Runnable() {
 			@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 			@Override
@@ -136,7 +145,8 @@ public class MyVideoPlayer {
 						MyVideoPlayer.this.nextPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 							@Override
 							public void onCompletion(MediaPlayer mediaPlayer) {
-								onVideoComplete(mediaPlayer,surfaceHolder);
+								finishListener.onFinish(mediaPlayer);
+								onVideoComplete();
 							}
 						});
 
@@ -146,22 +156,21 @@ public class MyVideoPlayer {
 						try {
 							MyVideoPlayer.this.nextPlayer.prepareAsync();
 							cachePlayerList.add(nextPlayer);
+							cachePlayerList.get(i-1).setDisplay(surfaceHolder);
 							cachePlayerList.get(i-1).setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 								@Override
 								public void onPrepared(MediaPlayer mediaPlayer) {
-									cachePlayer.setNextMediaPlayer(mediaPlayer);
-									cachePlayer = mediaPlayer;
+//									cachePlayer.setNextMediaPlayer(mediaPlayer);
+//									cachePlayer = mediaPlayer;
+									mediaPlayer.setDisplay(surfaceHolder);
 									Log.e("prepared", String.valueOf(currentVideoIndex));
-
-									if(isCompleted){
+									isLoaded = true;
 										try {
-											currentPlayer.reset();
-											playNext(mediaPlayer, surfaceHolder);
+//											currentPlayer.reset();
 											sendMessage(IS_COMPLETE,null);
-											Log.e("VideoComplete", String.valueOf(isCompleted));
+											Log.e("VideoIsLoaded", String.valueOf(isLoaded));
+											listener.onPrepared(mediaPlayer);
 										} catch (Exception e) { e.printStackTrace();}
-
-									}
 
 								}
 							});
@@ -197,11 +206,11 @@ public class MyVideoPlayer {
 					Log.v("BaseVideo",">>>start prepare:" + System.currentTimeMillis());
 					MyVideoPlayer.this.nextPlayer.setDataSource(urlList.get(1).sourceUrl);
 					MyVideoPlayer.this.nextPlayer.setDisplay(surfaceHolder);
-					currentPlayer.setScreenOnWhilePlaying(true);
+					nextPlayer.setScreenOnWhilePlaying(true);
 					MyVideoPlayer.this.nextPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
 						@Override
 						public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
-//								Log.e("buffereing", String.valueOf(i) + "%");
+							Log.e("buffereing", String.valueOf(i) + "%");
 						}
 					});
 					MyVideoPlayer.this.nextPlayer.prepareAsync();
@@ -237,31 +246,38 @@ public class MyVideoPlayer {
 //		currentPlayer = nextPlayer;
 	}
 
-	private void onVideoComplete(MediaPlayer mediaPlayer, final SurfaceHolder surfaceHolder) {
-			this.playNext(mediaPlayer, surfaceHolder);
+	private void onVideoComplete() {
 			this.isCompleted = true;
 			sendMessage(IS_COMPLETE, null);
+			currentVideoIndex++;
 		Log.e("VideoComplete", String.valueOf(isCompleted));
 	}
 
-	private void playNext(MediaPlayer mediaPlayer, final SurfaceHolder surfaceHolder){
+	private void playNext(final SurfaceHolder surfaceHolder){
 		try {
-			mediaPlayer.setDisplay(null);
 			currentPlayer.setDisplay(null);
 			Log.e("listener complete top", String.valueOf(currentVideoIndex));
 			if (currentVideoIndex < urlList.size() - 1) {
 				if(currentVideoIndex < cachePlayerList.size()){
-					currentPlayer = cachePlayerList.get(currentVideoIndex);
-					currentPlayer.setDisplay(surfaceHolder);
-					currentVideoIndex++;
+					try{
+//						currentPlayer = new MediaPlayer();
+						currentPlayer = cachePlayerList.get(currentVideoIndex);
+						currentPlayer.setDisplay(surfaceHolder);
+						currentPlayer.start();
+						isCompleted = false;
+						isLoaded = false;
+//						currentVideoIndex++;
+						Log.e("listener complete", String.valueOf(currentVideoIndex));
+					}catch (Exception e) {e.printStackTrace();}
+
 				}
 
 				currentPlayer.setScreenOnWhilePlaying(true);
-				Log.e("listener complete", String.valueOf(currentVideoIndex));
+
 
 			} else {
 				if (finishListener != null) {
-					finishListener.onFinish(mediaPlayer);
+					finishListener.onFinish(currentPlayer);
 				}
 			}
 

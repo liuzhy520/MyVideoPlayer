@@ -23,6 +23,7 @@ import java.util.ArrayList;
  */
 public class UseWidgetActivity extends Activity {
     private VideoPlayer VideoPlayer;
+    private boolean islocked = false;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.use_widget_activity);
@@ -47,8 +48,9 @@ public class UseWidgetActivity extends Activity {
 //                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
 //                video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
 //              video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
-                video.sourceUrl = "http://v.ysbang.cn//data/video/2015/rkb/2015rkb01.mp4";
-//                video.sourceUrl = "http://legendwing.com/videos/video4.mp4";
+                video.sourceUrl = "http://192.168.0.9/data/ts/2015rkb05/index.m3u8";
+//                video.sourceUrl = "http://192.168.0.9/data/ts/2015rkb05/high.m3u8";
+
 
                 video.isAd = false;
                 path.add(video);
@@ -60,7 +62,15 @@ public class UseWidgetActivity extends Activity {
         text1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(UseWidgetActivity.this, String.valueOf(VideoPlayer.isVideoPlaying()), Toast.LENGTH_SHORT).show();
+//                if(islocked){
+//                    VideoPlayer.setScreenLock(false);
+//                    islocked = false;
+//                }else {
+//                    VideoPlayer.setScreenLock(true);
+//                    islocked = true;
+//                }
+
+                Toast.makeText(UseWidgetActivity.this, String.valueOf(VideoPlayer.getVideoInfo().isAd), Toast.LENGTH_SHORT).show();
                 Log.e("duration", String.valueOf(VideoPlayer.getCurrentVideoDuration()));
             }
         });
@@ -75,14 +85,14 @@ public class UseWidgetActivity extends Activity {
     public void onResume(){
         super.onResume();
 //        setContentView(R.layout.use_widget_activity);
-        VideoPlayer.setOnCompleteIntializeListener(new onCompleteInitializeListener(){
+        VideoPlayer.setOnCompleteInitializeListener(new onCompleteInitializeListener() {
 
-			@Override
-			public void onComplete(SurfaceHolder surfaceHolder) {
-				// TODO Auto-generated method stub
-				Toast.makeText(UseWidgetActivity.this, "complete", Toast.LENGTH_SHORT).show();
-				
-			}});
+            @Override
+            public void onComplete(SurfaceHolder surfaceHolder) {
+                // TODO Auto-generated method stub
+                Toast.makeText(UseWidgetActivity.this, "complete", Toast.LENGTH_SHORT).show();
+
+            }});
     }
 
     public void onPause(){

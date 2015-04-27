@@ -57,6 +57,12 @@ public class VideoPlayer extends BaseVideoPlayer {
             }
         });
         Log.v("BaseVideo", ">>>created! time:" + System.currentTimeMillis());
+        this.setOnBufferingUpdateListener(new getBufferingUpdateListener() {
+            @Override
+            public void onUpdate(int i) {
+                Log.e("BaseVideo", ">>>buffering:" + i + "%");
+            }
+        });
     }
 
 

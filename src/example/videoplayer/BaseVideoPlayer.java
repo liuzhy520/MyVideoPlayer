@@ -43,6 +43,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
     protected boolean isFullScreenClick = false;
     protected boolean hasActiveHolder = false;
     protected boolean isLoaded = false;
+    protected boolean isScreenLocked = false;
     protected MediaPlayer currentMediaPlayer = new MediaPlayer();
     private ArrayList<String> path = new ArrayList<String>();
     private MyVideoPlayer.VideoInfo currentVideoInfo;
@@ -50,6 +51,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
     private MyVideoPlayer myVideoPlayer;
     /** listeners **/
     private onCompleteInitializeListener completeListener;
+    private getBufferingUpdateListener bufferingUpdateListener;
     /** handler **/
     private android.os.Handler mHandler = new android.os.Handler(){
         @Override
@@ -82,9 +84,27 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
     /** do something in here when the video is finished **/
     public abstract void onVideoFinished();
 
+    /** set Screen Lock **/
+    public void setScreenLock(boolean isLocked){
+        this.isScreenLocked = isLocked;
+    }
+    public boolean getIsScreenLocked(){ return this.isScreenLocked;}
+
+    /** get is landscape **/
+    public boolean getIsLandscapeStatus(){ return isLandscape;}
+
+    /** get loaded buffering **/
+    public interface getBufferingUpdateListener{
+            public void onUpdate(int i);
+    }
+    public void setOnBufferingUpdateListener(getBufferingUpdateListener listener){
+        this.bufferingUpdateListener = listener;
+    }
+
     /** initialize the view  **/
     protected abstract void init();
 
+    /** change the channel & play videos **/
     @SuppressWarnings("deprecation")
     public void setDisplay(final ArrayList<MyVideoPlayer.VideoInfo> path){
         try {
@@ -99,13 +119,20 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
         }catch (Exception e){e.printStackTrace();}
         isLoaded = false;
         playVideos(path);
+//        playVideosAsync(path);
+        currentMediaPlayer.setScreenOnWhilePlaying(true);
+        currentMediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+            @Override
+            public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
+                bufferingUpdateListener.onUpdate(i);
+                Log.e("BaseVideo", ">>>buffering:" + i + "%");
+            }
+        });
     }
 
     private void initSurfaceHolder(){
         this.surfaceHolder = this.surfaceView.getHolder();
         this.surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        final boolean isCompleted = false;
-        boolean isPrepared = false;
         BaseVideoPlayer.this.surfaceHolder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated( final SurfaceHolder surfaceHolder) {
@@ -143,13 +170,13 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
             @Override
             public void onOrientationChanged(int rotation) {
                 // TODO Auto-generated method stub
-                if(isLoaded){
-                    if(isLandscape && !isFullScreenClick){
+                if(isLoaded && !currentVideoInfo.isAd){
+                    if(isLandscape && !isFullScreenClick && !isScreenLocked){
                         if (((rotation >= 0) && (rotation <= 30)) || (rotation >= 330)) {
                             ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                             isLandscape = false;
                         }
-                    }else if(!isFullScreenClick && !isLandscape){
+                    }else if(!isFullScreenClick && !isLandscape && !isScreenLocked){
                         if (((rotation >= 230) && (rotation <= 310))) {
                             ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                             isLandscape = true;
@@ -177,6 +204,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
 
     }
 
+    /** two different modes in playing videos **/
     public void playVideos(final ArrayList<MyVideoPlayer.VideoInfo> path){
         myVideoPlayer = new MyVideoPlayer(path);
 
@@ -206,6 +234,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
 
                 Log.v("BaseVideo", ">>>start! time:" + System.currentTimeMillis());
                 Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
+
 
             }
         }, new MyVideoPlayer.onVideoFinishListener() {
@@ -244,27 +273,29 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
                         }
                         try {
 //                            currentMediaPlayer.reset();
+                            myVideoPlayer.currentPlayer = mediaPlayer;
+                            mediaPlayer.setDisplay(surfaceHolder);
+                            mediaPlayer.start();
+                            isLoaded = true;
+                            synchronized(this) {
+                                hasActiveHolder = true;
+                                ((Object)this).notify();
+                            }
+                            currentVideoInfo = path.get(1);
+                            currentMediaPlayer = mediaPlayer;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        myVideoPlayer.currentPlayer = mediaPlayer;
-                        mediaPlayer.setDisplay(surfaceHolder);
-                        mediaPlayer.start();
-                        isLoaded = true;
-                        synchronized(this) {
-                            hasActiveHolder = true;
-                            ((Object)this).notify();
-                        }
-                        currentVideoInfo = path.get(1);
-                        currentMediaPlayer = mediaPlayer;
                         onVideoChanged();
                         fixPLViews();
                         Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
+
                     }
                 });
 
             }
         });
+
         myVideoPlayer.getCurrentPlayer().setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
@@ -276,6 +307,84 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
             }
         });
     }
+
+    public void playVideosAsync(final ArrayList<MyVideoPlayer.VideoInfo> path){
+        myVideoPlayer = new MyVideoPlayer(path);
+
+        myVideoPlayer.loadFirstVideo(surfaceHolder, new MyVideoPlayer.onPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.start();
+                isLoaded = true;
+                synchronized(this) {
+                    hasActiveHolder = true;
+                    ((Object)this).notify();
+                }
+                currentVideoInfo = path.get(0);
+                currentMediaPlayer = mediaPlayer;
+                getCurrentVideoDuration();
+                onVideoChanged();
+                fixPLViews();
+                try {
+                    progressBar.setVisibility(GONE);
+                    if (null != maskImage) {
+                        maskImage.setVisibility(GONE);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Log.v("BaseVideo", ">>>start! time:" + System.currentTimeMillis());
+                Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
+            }
+        }, new MyVideoPlayer.onVideoFinishListener() {
+            @Override
+            public void onFinish(MediaPlayer mediaPlayer) {
+                progressBar.setVisibility(VISIBLE);
+                if (null != maskImage) {
+                    maskImage.setVisibility(VISIBLE);
+                }
+                isLoaded = false;
+                fixPLViews();
+            }
+        });
+        myVideoPlayer.loadMorePlayerThread(surfaceHolder, new MyVideoPlayer.onPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                progressBar.setVisibility(GONE);
+                if (null != maskImage) {
+                    maskImage.setVisibility(GONE);
+                }
+                try {
+//                            currentMediaPlayer.reset();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                myVideoPlayer.currentPlayer = mediaPlayer;
+                isLoaded = true;
+                currentVideoInfo = path.get(myVideoPlayer.currentVideoIndex);
+                Toast.makeText(context,String.valueOf(myVideoPlayer.currentVideoIndex), Toast.LENGTH_SHORT ).show();
+                currentMediaPlayer = mediaPlayer;
+                onVideoChanged();
+//                fixPLViews();
+                Log.v("BaseVideo", ">>>video duration:" + myVideoPlayer.getCurrentVideoDuration());
+            }
+        }, new MyVideoPlayer.onVideoFinishListener() {
+            @Override
+            public void onFinish(MediaPlayer mediaPlayer) {
+                onVideoFinished();
+                isLoaded = false;
+                synchronized(this) {
+                    hasActiveHolder = true;
+                    ((Object)this).notify();
+                }
+                fixPLViews();
+            }
+        });
+        currentVideoInfo = path.get(myVideoPlayer.currentVideoIndex);
+    }
+
 
     /** check is playing **/
     public boolean isVideoPlaying(){
@@ -438,7 +547,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
         public void onComplete(SurfaceHolder surfaceHolder);
     }
 
-    public void setOnCompleteIntializeListener(onCompleteInitializeListener listener){
+    public void setOnCompleteInitializeListener(onCompleteInitializeListener listener){
         this.completeListener = listener;
     }
 

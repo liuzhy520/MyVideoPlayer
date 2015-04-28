@@ -407,9 +407,11 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
         if(isLandscape){
             ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             isFullScreenClick = true;
+            isLandscape = false;
         }else {
             ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             isFullScreenClick = true;
+            isLandscape = true;
         }
     }
 

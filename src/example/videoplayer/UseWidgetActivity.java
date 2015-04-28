@@ -48,8 +48,9 @@ public class UseWidgetActivity extends Activity {
 //                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
 //                video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
 //              video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
-                video.sourceUrl = "http://192.168.0.9/data/ts/2015rkb05/index.m3u8";
+//                video.sourceUrl = "http://192.168.0.9/data/ts/2015rkb05/index.m3u8";
 //                video.sourceUrl = "http://192.168.0.9/data/ts/2015rkb05/high.m3u8";
+                video.sourceUrl = "http://192.168.0.9/data/video/2015/rkb/2015rkb01/index.m3u8";
 
 
                 video.isAd = false;

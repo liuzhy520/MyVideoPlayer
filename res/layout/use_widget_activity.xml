@@ -27,4 +27,11 @@
                           android:layout_marginLeft="200dp"
                           android:textSize="22sp"
                           android:text="show something"/>
+    <TextView             android:id="@+id/text3"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginLeft="200dp"
+                          android:layout_alignParentBottom="true"
+                          android:textSize="22sp"
+                          android:text="go forward"/>
 </RelativeLayout>

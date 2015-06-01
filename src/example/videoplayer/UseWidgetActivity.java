@@ -34,23 +34,27 @@ public class UseWidgetActivity extends Activity {
         VideoPlayer = (VideoPlayer) findViewById(R.id.base_video_player);
         TextView text = (TextView) findViewById(R.id.text);
         TextView text1 = (TextView) findViewById(R.id.text1);
+        TextView text3 = (TextView) findViewById(R.id.text3);
         text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                VideoPlayer.setFullScreenSwitcher();
                 ArrayList<MyVideoPlayer.VideoInfo> path = new ArrayList<MyVideoPlayer.VideoInfo>();
                 MyVideoPlayer.VideoInfo video = new MyVideoPlayer.VideoInfo();
-                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
+//                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
+                video.sourceUrl = "http://v.ysbang.cn/data/video/ad/normal.mp4";
                 video.isAd = true;
 
-                path.add(video);
+//                path.add(video);
                 video = new MyVideoPlayer.VideoInfo();
 //                video.sourceUrl = "http://v.ysbang.cn/data/test/test0.mp4";
 //                video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
 //              video.sourceUrl = "http://192.168.0.9/data/ts/index_1500.m3u8";
 //                video.sourceUrl = "http://192.168.0.9/data/ts/2015rkb05/index.m3u8";
 //                video.sourceUrl = "http://192.168.0.9/data/ts/2015rkb05/high.m3u8";
-                video.sourceUrl = "http://192.168.0.9/data/video/2015/rkb/2015rkb01/index.m3u8";
+//                video.sourceUrl = "http://192.168.0.9/data/video/2015/rkb/2015rkb01/index.m3u8";
+//                video.sourceUrl = "http://192.168.0.11//data/video/2013/ysfg/jichuban/2013jcysfg01/index.m3u8";
+                video.sourceUrl = "http://legendwing.com/videos/LOVE-128.mp4";
 
 
                 video.isAd = false;
@@ -70,12 +74,19 @@ public class UseWidgetActivity extends Activity {
 //                    VideoPlayer.setScreenLock(true);
 //                    islocked = true;
 //                }
-
+                VideoPlayer.setFullScreenSwitcher();
                 Toast.makeText(UseWidgetActivity.this, String.valueOf(VideoPlayer.getVideoInfo().isAd), Toast.LENGTH_SHORT).show();
                 Log.e("duration", String.valueOf(VideoPlayer.getCurrentVideoDuration()));
             }
         });
 
+        text3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int current = VideoPlayer.getCurrentVideoPosition();
+                VideoPlayer.seekTo(current + 300000);
+            }
+        });
 
     }
 

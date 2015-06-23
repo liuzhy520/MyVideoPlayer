@@ -3,6 +3,8 @@ package example.videoplayer;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -11,7 +13,9 @@ import android.widget.Toast;
 import example.videoplayer.BaseVideoPlayer.onCompleteInitializeListener;
 import example.videoplayer.util.MyVideoPlayer;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Wayne on 2015/4/20.
@@ -24,6 +28,7 @@ import java.util.ArrayList;
 public class UseWidgetActivity extends Activity {
     private VideoPlayer VideoPlayer;
     private boolean islocked = false;
+    private boolean isStart = false;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.use_widget_activity);
@@ -54,7 +59,7 @@ public class UseWidgetActivity extends Activity {
 //                video.sourceUrl = "http://192.168.0.9/data/ts/2015rkb05/high.m3u8";
 //                video.sourceUrl = "http://192.168.0.9/data/video/2015/rkb/2015rkb01/index.m3u8";
 //                video.sourceUrl = "http://192.168.0.11//data/video/2013/ysfg/jichuban/2013jcysfg01/index.m3u8";
-                video.sourceUrl = "http://legendwing.com/videos/LOVE-128.mp4";
+                video.sourceUrl = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8";
 
 
                 video.isAd = false;
@@ -62,6 +67,21 @@ public class UseWidgetActivity extends Activity {
                 VideoPlayer.stop();
                 VideoPlayer.release();
                 VideoPlayer.setDisplay(path);
+                sendMSG(0, null);
+                new Thread(){
+                    @Override
+                    public void run() {
+                        try {
+                            while(isStart){
+                                sendMSG(1, null);
+                                sleep(1000);
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
             }
         });
         text1.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +110,8 @@ public class UseWidgetActivity extends Activity {
 
     }
 
+
+
     public void onStart(){
         super.onStart();
     }
@@ -104,7 +126,9 @@ public class UseWidgetActivity extends Activity {
                 // TODO Auto-generated method stub
                 Toast.makeText(UseWidgetActivity.this, "complete", Toast.LENGTH_SHORT).show();
 
-            }});
+            }
+        });
+
     }
 
     public void onPause(){
@@ -127,5 +151,28 @@ public class UseWidgetActivity extends Activity {
             VideoPlayer.release();
         }catch (Exception e) {e.printStackTrace();}
     }
-
+    public void sendMSG(int m,Object object) {
+        Message msg = new Message();
+        msg.what = m;
+        msg.obj = object;
+        UIHandle.sendMessage(msg);
+    }
+    private SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+    private Date date = new Date();
+    private final Handler UIHandle = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    isStart = true;
+                    break;
+                case 1:
+                    int position = VideoPlayer.getCurrentVideoPosition();
+                    date.setTime(position * 1000);
+                    Log.e("time", String.valueOf(df.format(date)));
+                    Log.e("current position", String.valueOf(VideoPlayer.getCurrentVideoPosition()));
+                    break;
+            }
+        }
+    };
 }

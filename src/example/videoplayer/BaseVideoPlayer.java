@@ -263,12 +263,21 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
                         return false;
                     }
                 });
-//                mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
-//                    @Override
-//                    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-//                        bufferingUpdateListener.onUpdate(percent);
-//                    }
-//                });
+
+                mediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                    @Override
+                    public boolean onInfo(MediaPlayer mediaPlayer, int i, int i1) {
+                        Log.e("info", "i:" + i + " il:" + i1);
+                        return false;
+                    }
+                });
+
+                mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
+                    @Override
+                    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                        bufferingUpdateListener.onUpdate(percent);
+                    }
+                });
             }
         }, new MyVideoPlayer.onVideoFinishListener() {
             @Override
@@ -332,6 +341,13 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
                         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                             @Override
                             public boolean onError(MediaPlayer mp, int what, int extra) {
+                                return false;
+                            }
+                        });
+                        mediaPlayer.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                            @Override
+                            public boolean onInfo(MediaPlayer mediaPlayer, int i, int i1) {
+                                Log.e("info", "i:" + i + " il:" + i1);
                                 return false;
                             }
                         });

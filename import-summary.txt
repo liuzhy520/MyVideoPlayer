@@ -1,0 +1,144 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitattributes
+* .gitignore
+* .idea\
+* .idea\compiler.xml
+* .idea\copyright\
+* .idea\copyright\profiles_settings.xml
+* .idea\encodings.xml
+* .idea\misc.xml
+* .idea\workspace.xml
+* MyVideoPlayer.iml
+* README.md
+* ant.properties
+* app\
+* app\build.gradle
+* app\src\
+* app\src\main\
+* app\src\main\AndroidManifest.xml
+* app\src\main\java\
+* app\src\main\java\example\
+* app\src\main\java\example\videoplayer\
+* app\src\main\java\example\videoplayer\BaseVideoPlayer.java
+* app\src\main\java\example\videoplayer\MyActivity.java
+* app\src\main\java\example\videoplayer\UseWidgetActivity.java
+* app\src\main\java\example\videoplayer\VideoPlayer.java
+* app\src\main\java\example\videoplayer\util\
+* app\src\main\java\example\videoplayer\util\MyVideoPlayer.java
+* app\src\main\res\
+* app\src\main\res\drawable-hdpi\
+* app\src\main\res\drawable-hdpi\base_video_win_controller_colleat_normal.png
+* app\src\main\res\drawable-hdpi\base_video_win_controller_colleat_pressed.png
+* app\src\main\res\drawable-hdpi\base_video_win_controller_fullscreen.png
+* app\src\main\res\drawable-hdpi\base_video_win_controller_next_normal.png
+* app\src\main\res\drawable-hdpi\base_video_win_controller_next_pressed.png
+* app\src\main\res\drawable-hdpi\base_video_win_controller_pause.png
+* app\src\main\res\drawable-hdpi\base_video_win_controller_play.png
+* app\src\main\res\drawable-hdpi\base_video_win_controller_share.png
+* app\src\main\res\drawable-hdpi\base_video_win_controller_winscreen.png
+* app\src\main\res\drawable-hdpi\ic_launcher.png
+* app\src\main\res\drawable-hdpi\yaoxuexi_course_video_win_controller_processblock.png
+* app\src\main\res\drawable-ldpi\
+* app\src\main\res\drawable-ldpi\ic_launcher.png
+* app\src\main\res\drawable-mdpi\
+* app\src\main\res\drawable-mdpi\ic_launcher.png
+* app\src\main\res\drawable-xhdpi\
+* app\src\main\res\drawable-xhdpi\ic_launcher.png
+* app\src\main\res\drawable\
+* app\src\main\res\drawable\video_process_process_seek_block.xml
+* app\src\main\res\drawable\video_process_seek_bg.xml
+* app\src\main\res\layout\
+* app\src\main\res\layout\base_video_view.xml
+* app\src\main\res\layout\main.xml
+* app\src\main\res\layout\use_widget_activity.xml
+* app\src\main\res\values\
+* app\src\main\res\values\strings.xml
+* build.gradle
+* build.xml
+* gradle\
+* gradle\wrapper\
+* gradle\wrapper\gradle-wrapper.jar
+* gradle\wrapper\gradle-wrapper.properties
+* gradlew
+* gradlew.bat
+* out\
+* out\production\
+* out\production\MyVideoPlayer\
+* out\production\MyVideoPlayer\MyVideoPlayer.apk
+* out\production\MyVideoPlayer\MyVideoPlayer.unaligned.apk
+* out\production\MyVideoPlayer\example\
+* out\production\MyVideoPlayer\example\videoplayer\
+* out\production\MyVideoPlayer\example\videoplayer\BaseVideoPlayer$1.class
+* out\production\MyVideoPlayer\example\videoplayer\BaseVideoPlayer$2.class
+* out\production\MyVideoPlayer\example\videoplayer\BaseVideoPlayer$3.class
+* out\production\MyVideoPlayer\example\videoplayer\BaseVideoPlayer.class
+* out\production\MyVideoPlayer\example\videoplayer\BuildConfig.class
+* out\production\MyVideoPlayer\example\videoplayer\MyActivity$1.class
+* out\production\MyVideoPlayer\example\videoplayer\MyActivity$2.class
+* out\production\MyVideoPlayer\example\videoplayer\MyActivity$3.class
+* out\production\MyVideoPlayer\example\videoplayer\MyActivity.class
+* out\production\MyVideoPlayer\example\videoplayer\R$attr.class
+* out\production\MyVideoPlayer\example\videoplayer\R$drawable.class
+* out\production\MyVideoPlayer\example\videoplayer\R$id.class
+* out\production\MyVideoPlayer\example\videoplayer\R$layout.class
+* out\production\MyVideoPlayer\example\videoplayer\R$string.class
+* out\production\MyVideoPlayer\example\videoplayer\R.class
+* out\production\MyVideoPlayer\example\videoplayer\UseWidgetActivity$1.class
+* out\production\MyVideoPlayer\example\videoplayer\UseWidgetActivity.class
+* out\production\MyVideoPlayer\example\videoplayer\VideoPlayer$1.class
+* out\production\MyVideoPlayer\example\videoplayer\VideoPlayer.class
+* out\production\MyVideoPlayer\example\videoplayer\util\
+* out\production\MyVideoPlayer\example\videoplayer\util\MyVideoPlayer$1.class
+* out\production\MyVideoPlayer\example\videoplayer\util\MyVideoPlayer$2.class
+* out\production\MyVideoPlayer\example\videoplayer\util\MyVideoPlayer$3.class
+* out\production\MyVideoPlayer\example\videoplayer\util\MyVideoPlayer$4.class
+* out\production\MyVideoPlayer\example\videoplayer\util\MyVideoPlayer$onLoadNextSuccessListener.class
+* out\production\MyVideoPlayer\example\videoplayer\util\MyVideoPlayer$onPreparedListener.class
+* out\production\MyVideoPlayer\example\videoplayer\util\MyVideoPlayer$onVideoFinishListener.class
+* out\production\MyVideoPlayer\example\videoplayer\util\MyVideoPlayer.class
+* proguard-project.txt
+* settings.gradle
+
+Replaced Jars with Dependencies:
+--------------------------------
+The importer recognized the following .jar files as third party
+libraries and replaced them with Gradle dependencies instead. This has
+the advantage that more explicit version information is known, and the
+libraries can be updated automatically. However, it is possible that
+the .jar file in your project was of an older version than the
+dependency we picked, which could render the project not compileable.
+You can disable the jar replacement in the import wizard and try again:
+
+android-support-v4.jar => com.android.support:support-v4:19.1.0
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app\src\main\AndroidManifest.xml
+* res\ => app\src\main\res\
+* src\ => app\src\main\java\
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

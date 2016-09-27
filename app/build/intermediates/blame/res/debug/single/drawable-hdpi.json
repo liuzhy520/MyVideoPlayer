@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_play.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_play.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_next_normal.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_next_normal.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_next_pressed.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_next_pressed.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\yaoxuexi_course_video_win_controller_processblock.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\yaoxuexi_course_video_win_controller_processblock.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_winscreen.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_winscreen.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_colleat_pressed.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_colleat_pressed.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_share.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_share.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_colleat_normal.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_colleat_normal.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\ic_launcher.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_pause.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_pause.png"
+    },
+    {
+        "merged": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi\\base_video_win_controller_fullscreen.png",
+        "source": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\drawable-hdpi\\base_video_win_controller_fullscreen.png"
+    }
+]

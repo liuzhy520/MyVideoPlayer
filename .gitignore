@@ -65,3 +65,4 @@ bin/classes/example/videoplayer/util/MyVideoPlayer.class
 bin/MyActivity.apk
 bin/resources.ap_
 gen/example/videoplayer/Manifest.java
+.idea/

@@ -173,7 +173,6 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
         });
         ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         isLandscape = false;
-        /** 重力感应横竖屏 **/
 //        new OrientationEventListener(context){
 //
 //            @Override
@@ -493,7 +492,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
 
 
 
-        /** 重力感应 **/
+        /** 锟斤拷锟斤拷锟斤拷应 **/
 //        if(isLandscape){
 //            ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 //

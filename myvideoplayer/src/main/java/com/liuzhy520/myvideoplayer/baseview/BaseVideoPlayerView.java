@@ -1,4 +1,4 @@
-package com.liuzhy520.myvideoplayer.base;
+package com.liuzhy520.myvideoplayer.baseview;
 
 import android.content.Context;
 import android.util.AttributeSet;

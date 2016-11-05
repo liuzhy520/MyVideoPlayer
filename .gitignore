@@ -66,3 +66,8 @@ bin/MyActivity.apk
 bin/resources.ap_
 gen/example/videoplayer/Manifest.java
 .idea/
+.gradle/
+myvideoplayer/myvideoplayer.iml
+build/
+MyVideoPlayer.iml
+app/app.iml

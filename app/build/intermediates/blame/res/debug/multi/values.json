@@ -7,8 +7,8 @@
                     "startLine": 2,
                     "startColumn": 4,
                     "startOffset": 55,
-                    "endColumn": 42,
-                    "endOffset": 93
+                    "endColumn": 50,
+                    "endOffset": 101
                 },
                 "from": {
                     "file": "C:\\Users\\Wayne\\Desktop\\myCode\\MyVideoPlayer\\app\\src\\main\\res\\values\\strings.xml",
@@ -16,8 +16,8 @@
                         "startLine": 2,
                         "startColumn": 4,
                         "startOffset": 57,
-                        "endColumn": 42,
-                        "endOffset": 95
+                        "endColumn": 50,
+                        "endOffset": 103
                     }
                 }
             }

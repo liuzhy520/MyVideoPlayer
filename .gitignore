@@ -71,3 +71,5 @@ myvideoplayer/myvideoplayer.iml
 build/
 MyVideoPlayer.iml
 app/app.iml
+
+local.properties

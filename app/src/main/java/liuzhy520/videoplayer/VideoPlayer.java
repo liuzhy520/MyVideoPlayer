@@ -1,4 +1,4 @@
-package example.videoplayer;
+package liuzhy520.videoplayer;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,4 +1,4 @@
-package example.videoplayer;
+package liuzhy520.videoplayer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import example.videoplayer.util.MyVideoPlayer;
+import liuzhy520.videoplayer.util.MyVideoPlayer;
 
 
 import java.util.ArrayList;

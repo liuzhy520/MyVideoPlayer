@@ -1,16 +1,14 @@
-package example.videoplayer.util;
+package liuzhy520.videoplayer.util;
 
 import android.annotation.TargetApi;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Handler;
 
 /**
  * Created by Wayne on 2015/4/20. This is a core function class of the media

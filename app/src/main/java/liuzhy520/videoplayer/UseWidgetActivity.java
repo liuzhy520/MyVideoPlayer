@@ -1,7 +1,6 @@
-package example.videoplayer;
+package liuzhy520.videoplayer;
 
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,8 +9,8 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import example.videoplayer.BaseVideoPlayer.onCompleteInitializeListener;
-import example.videoplayer.util.MyVideoPlayer;
+import liuzhy520.videoplayer.BaseVideoPlayer.onCompleteInitializeListener;
+import liuzhy520.videoplayer.util.MyVideoPlayer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

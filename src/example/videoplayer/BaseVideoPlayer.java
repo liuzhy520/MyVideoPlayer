@@ -1,4 +1,4 @@
-package example.videoplayer;
+package liuzhy520.videoplayer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import example.videoplayer.util.MyVideoPlayer;
+import liuzhy520.videoplayer.util.MyVideoPlayer;
 
 
 import java.util.ArrayList;
@@ -173,7 +173,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
         });
         ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         isLandscape = false;
-        /** ÖØÁ¦¸ÐÓ¦ºáÊúÆÁ **/
+        /** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ **/
 //        new OrientationEventListener(context){
 //
 //            @Override
@@ -493,7 +493,7 @@ public abstract class BaseVideoPlayer extends RelativeLayout{
 
 
 
-        /** ÖØÁ¦¸ÐÓ¦ **/
+        /** ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ **/
 //        if(isLandscape){
 //            ((Activity)context).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 //

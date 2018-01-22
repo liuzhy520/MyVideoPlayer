@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="example.videoplayer"
-          android:versionCode="1"
+          package="liuzhy520.videoplayer"
+          android:versionCode="2"
           android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="8"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <application
@@ -11,13 +10,13 @@
             android:icon="@drawable/ic_launcher"
             android:theme="@android:style/Theme.NoTitleBar"
             >
-        <activity android:name="MyActivity"
+        <activity android:name="liuzhy520.videoplayer.MyActivity"
 
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 >
 
         </activity>
-        <activity android:name=".UseWidgetActivity"
+        <activity android:name="liuzhy520.videoplayer.UseWidgetActivity"
                   android:label="@string/app_name"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 >

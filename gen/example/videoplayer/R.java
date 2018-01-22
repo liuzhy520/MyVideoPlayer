@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package example.videoplayer;
+package liuzhy520.videoplayer;
 
 public final class R {
     public static final class attr {

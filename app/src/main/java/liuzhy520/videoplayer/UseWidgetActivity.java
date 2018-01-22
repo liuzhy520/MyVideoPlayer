@@ -9,8 +9,9 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import liuzhy520.videoplayer.BaseVideoPlayer.onCompleteInitializeListener;
+import liuzhy520.videoplayer.videoplayer.widget.BaseVideoPlayer.onCompleteInitializeListener;
 import liuzhy520.videoplayer.util.MyVideoPlayer;
+import liuzhy520.videoplayer.videoplayer.widget.VideoPlayer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.Date;
  * 
  */
 public class UseWidgetActivity extends Activity {
-    private VideoPlayer VideoPlayer;
+    private liuzhy520.videoplayer.videoplayer.widget.VideoPlayer VideoPlayer;
     private boolean islocked = false;
     private boolean isStart = false;
     public void onCreate(Bundle savedInstanceState) {

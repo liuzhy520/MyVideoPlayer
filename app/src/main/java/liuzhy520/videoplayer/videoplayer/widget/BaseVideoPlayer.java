@@ -1,4 +1,4 @@
-package liuzhy520.videoplayer;
+package liuzhy520.videoplayer.videoplayer.widget;
 
 import android.app.Activity;
 import android.content.Context;

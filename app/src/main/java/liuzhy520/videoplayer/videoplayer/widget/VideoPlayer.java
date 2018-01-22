@@ -1,4 +1,4 @@
-package liuzhy520.videoplayer;
+package liuzhy520.videoplayer.videoplayer.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import liuzhy520.videoplayer.R;
 
 /**
  * Created by Wayne on 2015/4/17.

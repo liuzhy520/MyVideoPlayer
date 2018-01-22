@@ -11,7 +11,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import liuzhy520.videoplayer.util.MyVideoPlayer;
+import liuzhy520.videoplayer.old.util.MyVideoPlayer;
 
 
 import java.util.ArrayList;

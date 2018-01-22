@@ -10,13 +10,13 @@
             android:icon="@drawable/ic_launcher"
             android:theme="@android:style/Theme.NoTitleBar"
             >
-        <activity android:name="liuzhy520.videoplayer.MyActivity"
+        <activity android:name="liuzhy520.videoplayer.old.MyActivity"
 
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 >
 
         </activity>
-        <activity android:name="liuzhy520.videoplayer.UseWidgetActivity"
+        <activity android:name="liuzhy520.videoplayer.old.UseWidgetActivity"
                   android:label="@string/app_name"
                   android:configChanges="orientation|keyboardHidden|screenSize"
                 >

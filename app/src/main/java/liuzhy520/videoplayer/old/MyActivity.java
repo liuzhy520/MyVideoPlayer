@@ -1,4 +1,4 @@
-package liuzhy520.videoplayer;
+package liuzhy520.videoplayer.old;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.IOException;
+
+import liuzhy520.videoplayer.R;
 
 public class MyActivity extends Activity implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener,
         MediaPlayer.OnPreparedListener, SurfaceHolder.Callback{

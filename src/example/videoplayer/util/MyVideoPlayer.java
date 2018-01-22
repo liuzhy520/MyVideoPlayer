@@ -1,4 +1,4 @@
-package liuzhy520.videoplayer.util;
+package liuzhy520.videoplayer.old.util;
 
 import android.annotation.TargetApi;
 import android.media.MediaPlayer;

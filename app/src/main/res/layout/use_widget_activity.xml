@@ -7,7 +7,7 @@
 <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-                <liuzhy520.videoplayer.videoplayer.widget.VideoPlayer
+                <liuzhy520.videoplayer.old.VideoPlayer
                     android:id="@+id/base_video_player"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
